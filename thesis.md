@@ -12,12 +12,15 @@ toc: true
 figPrefix: "figure"
 secPrefix: "section"
 tblPrefix: "table"
+header-includes:
+  - \usepackage{setspace}
 include-before:
   - '`\newpage{}`{=latex}'
 abstract: "This paper should total approximately 60 to 120 pages when complete."
 calendarlink: https://www.purdue.edu/academics/ogsps/about/calendar/index.html
 ---
 
+\doublespacing
 \clearpage
 # Introduction {#sec:intro}
 [This chapter will clearly define the research problem and the motivation for research.]
@@ -81,20 +84,18 @@ calendarlink: https://www.purdue.edu/academics/ogsps/about/calendar/index.html
 ## Year 1 
 The first studied mowing season lasted from May 2023 through October 2023. Initial prototypes of data collection systems were tested in the months leading up to the start of the season, and collection procedures were further developed in multiple iterations throughout the year. Mowing operations were performed by INDOT contractors with privately owned equipment, as shown in @Fig:mower.
 
-The tractors used consisted of Maxxum 115 and 125 tractors (Case IH, Racine, WI). Towed mowers were model 12815 flex-wing rotary cutters (Brush Hog, Selma, AL). Up to three tractors were monitored at a time.
+The tractors used consisted of Maxxum 115 and 125 tractors (Case IH, Racine, WI). Towed mowers were all various models of flex-wing rotary cutters 15 feet in width (Brush Hog, Selma, AL). Up to three tractors were monitored at a time.
 
-Operations were performed on roadways across many parts of the state of Indiana, including a range of different terrain conditions, some of which was quite rugged, as shown in @Fig:stuck. A map of Indiana counties in which operations took place is shown in @Fig:counties.
+Operations were performed on roadways across many parts of the state of Indiana, including a range of different terrain conditions, varying from flat plains in the center of the state to more rugged hills in the south. A map of Indiana counties in which operations took place is shown in @Fig:counties.
 
 ![An INDOT contractor's tractor and towed mower.](img/mower.png){#fig:mower width=5in}
 
-![Mowing equipment compromised by unstable terrain.](img/tractor_stuck.jpg){#fig:stuck width=4in}
-
 ![Counties in which monitored mowing operations took place.](img/blank.png){#fig:counties width=3in}
 
-### Telematics Logging
+### Telematics Logging {#sec:methods_iso}
 [This section should explain the ISOBlue and the data recorded with it. It should also explain the details used in processing those recordings.]
 
-Telematics were logged using a Purdue ISOBlue system [@Balmos_IsoblueAvenaFramework_2022], shown in @Fig:ISOBlue. These systems record all messages on the attached CAN bus, time and location as received from GPS, and have the capability to be remotely accessed over a cellular data connection (though cellular features were not used in this study). These devices were chosen because they are open-source [@OatsCenter_IsoblueHardwareAvena_2023] and technical support was readily available from local colleagues. Logged data was stored in three SQL tables; one for GPS data, one for CAN data, and one for cellular data. The GPS table contains columns for timestamps, latitude, and longitude. The CAN table contains columns for timestamps, network interface, message ID, and message data. The cellular table was not used in this study.
+Telematics were logged using a Purdue ISOBlue system [@Balmos_IsoblueAvenaFramework_2022], shown in @Fig:ISOBlue. These systems record all messages on the attached CAN bus, time and location as received from GPS, and have the capability to be remotely accessed over a cellular data connection. These devices were chosen because they are open-source [@OatsCenter_IsoblueHardwareAvena_2023] and technical support was readily available from local colleagues. Logged data was stored in three SQL tables; one for GPS data, one for CAN data, and one for cellular data. The GPS table contains columns for timestamps, latitude, and longitude. The CAN table contains columns for timestamps, network interface, message ID, and message data.
 
 ![A Purdue ISOBlue system.](img/isoblue.png){#fig:ISOBlue width=3in}
 
@@ -102,40 +103,48 @@ GPS data was recorded at a sample rate of 1 Hz. To calculate the ground speed of
 
 All CAN messages transmitted on each monitored tractor's ISOBUS were recorded to logs. The only messages used for this study were those with a parameter group number (PGN) of FE43 and FEF1, which contain data about the power take-off (PTO) used by the towed mower.
 
-### Video Recording
+### Video Recording {#sec:methods_camera}
 [This section will explain the GoPro and configuration settings used in 2023. It will also describe the process used to develop the configurations found.]
 
-Timelapses were recorded using a Hero 8 Black action-sports camera (GoPro, San Mateo, CA). Cameras were mounted with rugged metal motorsports frames, as shown in @Fig:camera. These systems were flashed with an experimental firmware [@Newman_GoproLabs_2024] that allows recordings to be triggered programmatically in response to different conditions. Cameras were triggered to record by "keyed" power (power only enabled when the tractor is switched on), with an additional delay provided to encourage recording only mowing operations, not any initial preparations. Keyed power was provided through a custom wire harness, which included a DC-DC converter to take in the tractor's 12V power and output 5V power for the camera's USB connector. Recording was programmed to stop automatically after keyed power was switched off.
+Timelapses were recorded using a Hero 8 Black action-sports camera (GoPro, San Mateo, CA). Cameras were mounted in rugged metal motorsports frames, as shown in @Fig:camera. These systems were flashed with an experimental firmware [@Newman_GoproLabs_2024] that allows recordings to be triggered programmatically in response to different conditions. Cameras were triggered to record by "keyed" power (power only enabled when the tractor is switched on), with an additional delay provided to encourage recording only mowing operations, not any initial preparations. Keyed power was provided through a custom wire harness, which included a DC-DC converter to take in the tractor's 12V power and output 5V power for the camera's USB connector. Recording was programmed to stop automatically after keyed power was switched off.
 
 ![The type of camera and mounting frame used in this study.](img/camera.jpg){#fig:camera width=3in}
 
-In the configuration used first, the program took wide-angle high-resolution photographs at a sample rate of 1 Hz, each saved as a separate file so that any possible corruption would affect only a single frame. This configuration used a delay of 30 minutes after keyed power was switched on, putting the camera to sleep for that duration.
+In the configuration used first, the program took wide-angle high-resolution photographs at a sample rate of 1 Hz, each saved as a separate file so that any possible corruption would affect only a single frame. This configuration used a delay of 30 minutes after keyed power was switched on, putting the camera to sleep for that duration. The logic of this configuration is summarized in @Fig:config1.
 
-The second configuration used during the 2023 season recorded wide-angle videos at a sample rate of 1 Hz and a resolution of 1080p. Each instance of keyed power was recorded in its own file to allow video compression to reduce data storage requirements. This configuration also used a delay of 30 minutes, but it was split between 25 minutes of sleep and 5 minutes of idling in order to allow the camera time to fix on a GPS signal.
+![A diagram describing how keyed power controls timelapse photography in the camera's first configuration.](img/config1.png){#fig:config1 height=1.5in}
+
+The second configuration used during the 2023 season recorded wide-angle videos at a sample rate of 1 Hz and a resolution of 1080p. Each instance of keyed power was recorded in its own file to allow video compression to reduce data storage requirements. This configuration also used a delay of 30 minutes, but it was split between 25 minutes of sleep and 5 minutes of idling in order to allow the camera time to fix on a GPS signal. The logic of this configuration is summarized in @Fig:config2
+
+![A diagram describing how keyed power controls timelapse recordings in the camera's second configuration.](img/config2.png){#fig:config2 height=1.5in}
+
+The third and most advanced configuration used during the 2023 season recorded wide-angle videos at a sample rate of 1 Hz and a resolution of 1080p. Each instance of keyed power was recorded in its own file, as before. However, the 5-minute idle period was replaced by a GPS speed trigger, ensuring that the camera would not begin recording until it had obtained a GPS signal and could confirm that the tractor was moving. The logic of this configuration is summarized in @Fig:config3.
+
+![A diagram describing how keyed power and GPS controls timelapse recordings in the camera's third configuration.](img/config3.png){#fig:config3}
 
 GPS metadata was extracted from video timelapses using an open-source python program [@Casillas_Gopro2gpx_2023].
 
 Cameras were deployed at the start of the mowing season and memory cards were rotated every two weeks during operational periods. Remote tracking was not available, so monitored tractors were located each time by word-of-mouth from the mowing foreman.
 
-### Video Processing
+### Video Processing {#sec:methods_video}
 [This section will explain the video annotation methods used in 2023. It will provide detailed explanations of the AI and manual review process.]
 
-Visual recordings were analyzed by both manual review and computer vision programs. Manual reviewers watched all footage and noted how many obstacles were encountered, what kinds of obstacles were encountered, the nature of each encounter (successful avoidance, non-destructive touch, or destructive collision), as well as any unusual circumstances encountered [@Sprague_AnalyzingVideoIsobus_2024]. Computer vision programs [@Sprague_ProgramAnnotateVideos_2024] were used to quantify how much time the mower spent on road shoulders and lane surfaces, what kind of road was being mowed (rural or highway), and when the towed mower received engine power.
+Visual recordings were analyzed by both manual review and computer vision programs. Manual reviewers watched all footage and noted how many obstacles were encountered, what kinds of obstacles were encountered, the nature of each encounter (successful avoidance, non-destructive touch, or destructive collision), as well as any unusual circumstances encountered [@Sprague_AnalyzingVideoIsobus_2024]. Computer vision programs [@Sprague_ProgramAnnotateVideos_2024] were used to quantify how much time the mower spent on road shoulders and lane surfaces, what kind of road was being mowed (rural or highway), and when the towed mower received engine power (PTO).
 
-Computer vision programs were image segmentation models, trained based on mowing videos annotated by hand. Images were segmented into 4 primary classes ("road", "shoulder", "grass", and "mower"), with 16 secondary classes marked with less frequency (and less accuracy in the final model). The full list of segmentation classes are given in @Tbl:segments.
+Computer vision programs were image segmentation models, trained based on mowing videos annotated by hand. Images were segmented into twenty classes (with the most important being "road", "shoulder", "grass", and "mower"). The full list of segmentation classes are given in @Tbl:segments.
 
-| Class # |   Type    |     | Class # |      Type      |
-| :-----: | :-------: | --- | :-----: | :------------: |
-|    0    |   Road    |     |   10    |    Shoulder    |
-|    1    |   Grass   |     |   11    |     Drain      |
-|    2    |   Mower   |     |   12    | Bridge Barrels |
-|    3    |   Sign    |     |   13    |      Post      |
-|    4    | Building  |     |   14    |     Litter     |
-|    5    |     -     |     |   15    |    Roadkill    |
-|    6    |  Vehicle  |     |   16    |  Traffic Cone  |
-|    7    |   Human   |     |   17    |    Mailbox     |
-|    8    |  Gravel   |     |   18    |    Branches    |
-|    9    | Guardrail |     |   19    | Cable Barrier  |
+| Class ID |   Name    |     | Class ID |      Name      |
+| :------: | :-------: | --- | :------: | :------------: |
+|    0     |   Road    |     |    10    |    Shoulder    |
+|    1     |   Grass   |     |    11    |     Drain      |
+|    2     |   Mower   |     |    12    | Bridge Barrels |
+|    3     |   Sign    |     |    13    |      Post      |
+|    4     | Building  |     |    14    |     Litter     |
+|    5     |     -     |     |    15    |    Roadkill    |
+|    6     |  Vehicle  |     |    16    |  Traffic Cone  |
+|    7     |   Human   |     |    17    |    Mailbox     |
+|    8     |  Gravel   |     |    18    |    Branches    |
+|    9     | Guardrail |     |    19    | Cable Barrier  |
 
 : The classes available for polygons identified via image segmentation [@Sprague_ProgramAnnotateVideos_2024]. {#tbl:segments}
 
@@ -159,49 +168,50 @@ Camera configurations were also evaluated using a robotic test rig. The automate
 The requirements for the rig were determined experimentally. The minimum radius was found by moving a camera in successively wider circles until it would reliably measure movement via GPS, and the final design was given a slightly longer boom than that for additional tolerance. 
 
 #### Test Rig Design
-The design of the robotic test rig is shown in @Fig:rig. The motor used was rated for 250 Watts of continuous power, model number DRVASMB7120037 (Pride Mobility, Exeter, PA). The boom was made from aluminum square tubing, providing a movement radius of 2 meters. The system was controlled by an ESP32 microcontroller, with firmware provided in [CITATION].
+The design of the robotic test rig is shown in @Fig:test. The motor used was rated for 250 Watts of continuous power, model number DRVASMB7120037 (Pride Mobility, Exeter, PA). The boom was made from aluminum square tubing, providing a movement radius of 2 meters. The system was controlled by an ESP32 microcontroller, with firmware provided in [CITATION].
 
-![CAD model of the robotic test rig. The real-world machine includes a counterweight on the opposite end of the long arm, allowing the rig to spin without applying excess lateral strain to the motor shaft.](img/rig_cad.png){#fig:rig width=5in}
+The initial design used a caster wheel to support the long arm, in order to prevent the weight of the boom and attached camera from applying too much lateral strain to the motor shaft. However, as the system was used in outdoor conditions (to most accurately simulate realistic mowing, and allow unobstructed GPS reception), uneven terrain under the wheel would cause the system to vibrate too violently when moving at full speed. The final version of the machine ended up using a counterweight at the opposite end of the arm, to allow the boom to spin freely in midair without needing support under the long arm. A photograph of the machine is shown in @Fig:test.
 
-The initial design used a caster wheel to support the long arm, in order to prevent the weight of the boom and attached camera from applying too much lateral strain to the motor shaft. However, as the system was used in outdoor conditions (to most accurately simulate realistic mowing), uneven terrain under the wheel would cause the system to vibrate too violently when moving at full speed. The final version of the machine in the real world ended up adding a counterweight to the opposite end of the arm, to allow the boom to spin freely in midair without needing support under the long arm. The real machine is shown in @Fig:test.
-
-![Photograph of the robotic test rig in operation.](img/blank.png){#fig:test width=3in}
+![Photograph of the robotic test rig in operation. Callouts are provided to mention the main electromechanical components.](img/blank.png){#fig:test width=3in}
 
 #### Automated Testing Schedule {#sec:schedule}
-The programmed schedule of the test rig is given in @Tbl:schedule. The schedule was designed to test the following situations:
+The most important metric for determining whether a camera configuration is effective is whether it begins recording at the correct times. A simple schedule was devised to check if the camera would trigger reliably: five minutes "off", with the test rig not moving and the camera power disabled, alternating with periods of five minutes "on", with the camera powered and in motion. The final camera configuration, explained in @Sec:methods_camera2, was tested for a total of 15 cycles.
 
-1. Keyed power without movement (as though the tractor is turned on but does not begin mowing)
-2. Keyed power with immediate movement (to measure the latency before beginning recording)
-3. Keyed power with delayed movement (as though the tractor is turned on but does not begin mowing for some time)
-4. Movement before keyed power (as though power is temporarily interrupted during mowing)
-5. Keyed power with immediate but brief movement (to see if the camera can record short mowing sessions accurately)
-6. Keyed power after prolonged period of power-off (as though the tractor is turned on after sitting unused for some time)
-
-The first five situations were tested by the stages given directly in the @Tbl:schedule. The final situation was tested by programming the machine to wait 16 hours between replicates of the former situations. Three replicates were tested for each configuration.
-
-| Stage | Duplicates | Power-On Delay | Movement Delay | Movement Duration | Power-off Delay |
-| :---: | :--------: | :------------: | :------------: | :---------------: | :-------------: |
-|   1   |     1      |     0 min      |     30 min     |       0 min       |      0 min      |
-|   2   |     1      |     1 min      |     19 min     |      59 min       |      0 min      |
-|   3   |     1      |     1 min      |     19 min     |      40 min       |      0 min      |
-|   4   |     1      |     5 min      |     0 min      |      30 min       |      0 min      |
-|   5   |     3      |     4 min      |     4 min      |      10 min       |      1 min      |
-
-: The testing schedule for the automated test rig. The full schedule was replicated three times for each camera configuration, with a power-off period of 16 hours between each replicate. The motivation for each stage is explained in @Sec:schedule. {#tbl:schedule}
+The videos recorded by the automatic schedule were checked for duration and GPS metadata. A cycle was qualitatively considered as "success" if the camera correctly detected movement and at some point started recording
 
 ## Year 2
 [This section will explain the materials and processes used in 2024 in detail.]
 
-![The operations monitoring equipment as deployed in a tractor in July 2024.](img/internal_2024.jpg){#fig:int24 width=5in}
+The second studied mowing season lasted from May 2024 through October 2024. Data collection systems and procedures were based on a refinement of those from the previous year. Mowing operations were performed by INDOT contractors with privately owned equipment, as shown in @Fig:mower.
+
+The tractors used consisted of Maxxum 115 and 125 tractors (Case IH, Racine, WI). Towed mowers were various models of flex-wing rotary cutters 15 feet in width (Brush Hog, Selma, AL). Up to three tractors were monitored at a time. Additional equipment was added to the monitoring system compared to the previous year: of a pair of remote GPS trackers (Apple, Cupertino, CA; and Samsung, Ridgefield Park, NJ), shown in @Fig:int24.
+
+![The operations monitoring equipment as deployed in a tractor in July 2024. (1) The remote GPS trackers, which allowed easily locating monitored tractors and real-time indication of activity. (2) The telematics logging system, as discussed in @Sec:methods_iso. (3) The camera system used for visual recordings, programmed as explained in @Sec:methods_camera2.](img/internal_2024.jpg){#fig:int24 width=5in}
+
+Operations were performed on roadways across many parts of the state of Indiana, including a range of different terrain conditions, varying from flat plains in the center of the state to more rugged hills in the south. A map of Indiana counties in which operations took place is shown in @Fig:counties2.
+
+![Counties in which monitored mowing operations took place during 2024.](img/blank.png){#fig:counties2 width=3in}
 
 ### Telematics Logging
 [This section will explain the ISOBlue and the data recorded with it. It will explain the details used in processing the recordings.]
 
-### Video Recording
+Telematics were logged using a Purdue ISOBlue system [@Balmos_IsoblueAvenaFramework_2022], as discussed in @Sec:methods_iso. GPS data was recorded at a sample rate of 1 Hz. To calculate the ground speed of the monitored tractor, the haversine method [@Deniau_CalculateDistance2_2024] was used to find the distance between each consecutive coordinate pair, and this was divided by the difference between associated timestamps.
+
+All CAN messages transmitted on each monitored tractor's ISOBUS were recorded to logs. The only messages used for this study were those with a parameter group number (PGN) of FE43 and FEF1, which contain data about the power take-off (PTO) used by the towed mower.
+
+### Video Recording {#sec:methods_camera2}
 [This section will explain the GoPro and configuration settings used in 2024. It will also describe the process used to develop the configurations found.]
+
+Timelapses were recorded using a Hero 8 Black action-sports camera (GoPro, San Mateo, CA), mounted in rugged metal motorsports frames and flashed with an experimental firmware [@Newman_GoproLabs_2024], as discussed in @Sec:methods_camera. To address shortcomings identified in Year 1 methods, new firmware configurations were developed for Year 2.
+
+The new firmware configurations mostly revolved around two major changes: removing the camera battery, which allowed simple circuit physics to replace the software-based keyed power trigger, and saving the firmware configuration into nonvolatile memory so that settings were reliably retained during powered-off periods. The GPS-based speed trigger was retained from the third configuration explained in @Sec:methods_camera, to encourage reliable GPS metadata in recorded videos. Additionally, the sleeping period was removed, such that even short periods of movement after power-on would be recorded. The logic of this configuration is summarized in @Fig:config4. The grace period for intermittent stops (hysteresis) was initially tested as 5 minutes, but later changed to 30 minutes (as is shown in the figure). The only change to the firmware configurations after that development was in enabling "large chapter support" so that very long videos would not be broken up into multiple smaller files.
+
+![A diagram describing how keyed power and GPS controls timelapse recordings in the camera's latest configuration.](img/config4.png){#fig:config4 height=2in}
 
 ### Video Processing
 [This section will explain the video annotation methods used in 2024. It will provide detailed explanations of the AI and manual review process.]
+
+Visual recordings were analyzed by both manual review and computer vision programs, much the same as explained in @Sec:methods_video. More sophisticated computer vision programs were developed for analyzing the larger dataset, open-source and available online [@Sprague_ProgramAnnotateVideos_2024].
 
 
 \clearpage
