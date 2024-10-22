@@ -97,7 +97,7 @@ Operations were performed on roadways across many parts of the state of Indiana,
 
 ![An INDOT contractor's tractor and towed mower.](img/mower.png){#fig:mower width=5in}
 
-![Counties in which monitored mowing operations took place during 2023.](img/counties_isoblue_2023.png){#fig:counties height=3in}
+![Counties in which fully monitored mowing operations took place during 2023.](img/counties_2023.png){#fig:counties height=3in}
 
 ### Telematics Logging {#sec:methods_iso}
 Telematics were logged using a Purdue ISOBlue system [@Balmos_IsoblueAvenaFramework_2022], shown in @Fig:ISOBlue. These systems record all messages on the attached CAN bus, time and location as received from GPS, and have the capability to be remotely accessed over a cellular data connection. These devices were chosen because they are open-source [@OatsCenter_IsoblueHardwareAvena_2023] and technical support was readily available from local colleagues. Logged data was stored in three SQL tables; one for GPS data, one for CAN data, and one for cellular data. The GPS table contains columns for timestamps, latitude, and longitude. The CAN table contains columns for timestamps, network interface, message ID, and message data.
@@ -182,7 +182,7 @@ The electrical design of the system is straightforward. An ESP32 microcontroller
 ![Block diagram of the electronics powering and controlling the robotic test rig.](img/electronics.pdf){#fig:electronics}
 
 #### Automated Testing Schedule {#sec:schedule}
-The most important metric for determining whether a camera configuration is effective is whether it begins recording at the correct times. A simple schedule was devised to check if the camera would trigger reliably: five minutes "off", with the test rig not moving and the camera power disabled, alternating with periods of five minutes "on", with the camera powered and in motion. The final camera configuration, explained in @Sec:methods_camera2, was tested for a total of 11 cycles.
+The most important metric for determining whether a camera configuration is effective is whether it begins recording at the correct times. A simple schedule was devised to check if the camera would trigger reliably: five minutes "off", with the test rig not moving and the camera power disabled, alternating with periods of ten minutes "on", with the camera powered and in motion. The final camera configuration, explained in @Sec:methods_camera2, was tested for a total of 11 cycles.
 
 The videos recorded by the automatic schedule were checked for duration and GPS metadata. A cycle was qualitatively considered as "success" if the camera correctly detected movement and at some point started recording. The quantitative measure of success was the ratio of recording time to moving time.
 
@@ -222,42 +222,69 @@ Visual recordings were analyzed by both manual review and computer vision progra
 
 
 \clearpage
-# Results
+# Results & Discussion
 ## Year 1
 [This section will present the data gathered in 2023 and identify basic trends.]
 
-### Data Collection System Uptime
+### Data Collection System Uptime {#sec:uptime_2023}
 [This section will show the percentage uptime for each component of the original data collection system, as well as the uptime of the system as a whole, during the 2023 season.]
+
+Teething issues with the system meant that operations monitoring suffered from poor uptime throughout the first year's deployment. An overview of the uptime for telematics, cameras, and both simultaneously is shown in @Fig:uptime_2023, derived from the GPS data recorded by both systems.
+
+![Timeline showing when different parts of the data collection system were properly recording during the 2023 mowing season. There were significant gaps in coverage both on individual tractors and across the effort for the season as a whole.](img/uptime_2023.png){#fig:uptime_2023 height=2.5in}
+
+As mentioned in the figure caption, the data collection system missed significant gaps throughout the season. The telematics loggers were the most reliable part of the system, as they recorded nearly everything without fail. The only noticeable gap in the telematics coverage, on Tractor02 in late August (where the cameras were working for a time without it), was not a failure of the recording system; that set of logs from the telematics systems was corrupted and lost after those monitored operations were successfully recorded.
+
+A flaw in the system was the inability for cameras to receive GPS signal reliably before beginning to record, which caused some recordings to save incorrect timestamps (off by multiple years, in some cases) or no GPS data at all---which would mean it could not be reliably time-synchronized with any other data. This was corrected mid-season by adding a GPS speed trigger to the firmware configuration (see @Fig:config3), which required the GPS to obtain a signal and report the mower moving before the camera would begin recording. This added some latency to the startup, but greatly improved the quality of data recorded by the system, so it was considered a worthwhile trade-off.
+
+The largest flaw in the system was the frequent failure of the camera systems to persist after more than a few days from installation or maintenance. The firmware configuration used at the time relied on a software-based power-trigger that started with the tractor's keyed power, as explained in @Sec:methods_camera. The weakness of this configuration was that it is incompatible with automatic rebooting after power failure. As a result, whenever cameras ran completely out of battery between mowing sessions (verified in more detail in @Sec:manual_results) they would not automatically reboot into the same configuration upon being recharged by the tractor's power system. This resulted in the cameras functioning as expected for up to a few days, before running out of battery and not recording again until reset during maintenance.
 
 ### Obstacle Collisions
 [This section will identify the obstacles encountered in 2023 and note which were most common, which were most often damaged, and so forth.]
 
-![Obstacle encounters in 2023 mowing data. Signs and posts were the most common by far, though encounters that actually damaged obstacles were rare.](img/obstacles_2023.png){#fig:obstacles_2023 height=3.5in}
+Although limited data was collected, there was still enough to measure a significant number of encounters with many kinds of obstacles. The number of encounters with ten kinds of obstacles is shown in @Fig:obstacles_2023, segregated by road type (rural roads or highways).
+
+![Obstacle encounters in 2023 mowing data. Signs and posts were the most common by far, though encounters that actually damaged obstacles were rare. Note that two bars extend beyond the edge of the plot; the length of each extending bar is annotated onto the plot numerically.](img/obstacles_2023.png){#fig:obstacles_2023 height=3.5in}
+
+Posts (a catch-all category for any narrow vertical obstacles that were not road signs) and signs were the most common obstacles by far, with more posts in highway environments and more signs along rural roads. Mailboxes were quite common along rural roads but absent on highways.
+
+In all cases, operators were generally successful in maneuvering around obstacles without touching them. In the situations where the mower made contact with an obstacle, most of the time the obstacle was left without any permanent damage (only "touched"). However, a small but quantifiable number of situations ended with the mower permanently damaging the obstacle (the darkest bars in @Fig:obstacles_2023). While these are regrettable, this provides an effective baseline level of performance for normal human operators performing conventional roadside vegetation control. This data could be useful for comparing against other vegetation control systems, including autonomous mowing robots, as a benchmark that should be met or exceeded before implementation.
 
 ### On-Road Operations
 [This section will note how long the mowers spent on-shoulder and on-road during operation. It will also mention how long was spent in transit (on-road and not operating).]
 
+Another measurement taken of mower performance was the proportion of time spent with a mower extending onto the road surface, including the shoulder if not the actual road lanes. These measurements are shown in @Fig:shoulder_2023, segregated by road type.
+
 ![Operators were much more likely to drive on-road on rural roads.](img/shoulder_2023.png){#fig:shoulder_2023 height=3in}
+
+Tractor operators were much more likely to tow their mower on-road or at least on-shoulder on rural roads. A significant reason for this is the very narrow shoulder on many of those roads; there often is not enough space for the mower to even fit entirely off-road. While this practice is still risky compared to staying off the road entirely, it is less risky on rural roads where traffic is usually lower-speed and less crowded.
+
+These results may inspire a change in operating procedures to encourage safer practices, or spur the development of new roadside vegetation control technologies that do not require such wide equipment that it cannot fit on narrow rural shoulders.
 
 ## Validation Process
 [This section will present the data gathered by the test rig and other validation protocols.]
 
-### Manual GPS Testing
+### Manual GPS Testing {#sec:manual_results}
 [This section will note which configurations were able to most reliably record with GPS metadata. It will also identify which configuration options were necessary to correct flaws.]
 
-|   Mode    | Average Power Draw (W) |
-| :-------: | :--------------------: |
-|   Idle    |          1.8           |
-| Recording |          2.1           |
+A shortcoming of the GoPro platform chosen for this study is that it cannot charge its own battery while recording [@GoProSupport_HowChargeCamera_2023]. As a result, the battery will slowly drain even if the camera is connected to power. This was verified by connecting the camera through a USB power meter and measuring the average power draw in various situations. With no battery installed, the camera draws the same amount of power from the charger as it does with a partially-charged battery installed, suggesting that no additional power is drawn for charging the battery.
 
-: GoPro power draw as measured on the benchtop. There was no significant difference in power draw for each category between camera configurations, though full-speed video was not tested in this study.
+In initial firmware configurations, two major flaws were the inability to retain configuration after power loss and the lack of reliable GPS metadata, as mentioned in @Sec:uptime_2023. Manual tests were the primary method of iteration when discovering these problems and attempting to solve them.
 
-![Total confirmed time and distance covered during manual testing with various transportation methods. Logarithmic scale.](img/manual_results.png){#fig:manual_results height=2.5in}
+After discovering that GPS metadata was unreliable, GPS speed trigger was added to the configuration (see @Fig:config3), which required the camera to obtain a GPS signal and report movement before it would begin recording. The GPS trigger was tested on foot, bicycle, and automobile to ensure that it functioned reliably at low, medium, and high speeds, and all GPS-triggered recordings successfully acquired a quality GPS signal before starting to record.
 
-### Automated Reliability Testing
+To solve the configuration-loss on power-loss issue, a more significant system architecture change was found necessary. There exists an option in the firmware to automatically reboot into a script upon restoring power (`WAKE=2`), but this was incompatible with triggering the camera with keyed power, as the rising edge of the keyed power would go towards waking the camera, not the power trigger. As the GPS speed trigger had already been added by the time the nature of this flaw had been discovered, it was decided to remove the power trigger and rely only on the automatic WAKE boot-up instead.
+
+To ensure that the camera started from the same WAKE state with each instance of keyed power, the battery was removed entirely: the cameras were run purely on keyed power. However, this meant that the cameras could not run any dynamic processes between power states, including the real-time clock (RTC) and periodically connecting to GPS. While the GPS problem (adding latency to the startup) was found insurmountable, the RTC problem was solved by adding a GPS time synchronization parameter to the firmware configuration (`MSYNC=1`), which resets the RTC on each boot-up with the time received from GPS. (While this feature is not officially supported on the Hero 8 used in this study, it worked correctly in manual and automated testing.)
+
+### Automated Reliability Testing {#sec:test_rig_results}
 [This section will give the system uptime of the test-rig runs for each tested configuration.]
 
-![The automatic camera properly triggered recording for 72% of movements, capturing 55% of total time spent in motion.](img/testrig_results.png){#fig:rig_results width=5.5in}
+The automated test rig was used to gather quantitative results about the camera triggering reliability and latency. A timeline of programmed movements and the corresponding recordings is shown in @Fig:rig_results.
+
+![The automatic camera properly triggered recording for all movements, capturing 87% of total time spent in motion with an average latency of 104 seconds.](img/testrig_results.png){#fig:rig_results width=5.5in}
+
+After the many issues with power failures and GPS metadata in the 2023 mowing season, the robotic testing rig was conceived as a way to automatically run camera firmware configurations through a lengthy battery of tests. The repeated power cycles and simple movements test the reliability of the new firmware; initial tests had the camera trigger for less than 100% of the movements, but the final firmware developed in this study was very successful on the test rig, as stated in the @Fig:rig_results caption.
 
 ## Year 2
 [This section will present the data gathered in 2024 and identify basic trends.]
