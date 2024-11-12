@@ -88,16 +88,20 @@ Many different technologies can be used to manage roadside vegetation. Beyond co
 # Methods
 [This chapter will clearly describe the appropriate research methods and tools developed and used for this study.]
 
-## Year 1 
-The first studied mowing season lasted from May 2023 through October 2023. Initial prototypes of data collection systems were tested in the months leading up to the start of the season, and collection procedures were further developed in multiple iterations throughout the year. Mowing operations were performed by INDOT contractors with privately owned equipment, as shown in @Fig:mower.
-
-The tractors used consisted of Maxxum 115 and 125 tractors (Case IH, Racine, WI). Towed mowers were all various models of flex-wing rotary cutters 15 feet in width (Brush Hog, Selma, AL). Up to four tractors were monitored at a time.
-
-Operations were performed on roadways across many parts of the state of Indiana, including a range of different terrain conditions, varying from flat plains in the north and center of the state to more rugged hills in the south.
+## Mowing Operations
+The first studied mowing season lasted from May 2023 through October 2023. Initial prototypes of data collection systems were tested in the months leading up to the start of the season, and collection procedures were further developed in multiple iterations throughout the year. The second studied mowing season lasted from May 2024 through October 2024. Data collection systems and procedures were based on a refinement of those from the previous year. All mowing operations were performed by INDOT contractors with privately owned equipment, as shown in @Fig:mower.
 
 ![An INDOT contractor's tractor and towed mower.](img/mower.png){#fig:mower width=4in}
 
-### Telematics Logging {#sec:methods_iso}
+The tractors used consisted of Maxxum 115 and 125 tractors (Case IH, Racine, WI). Towed mowers were all various models of flex-wing rotary cutters 15 feet in width (Brush Hog, Selma, AL). Up to four tractors were monitored at a time in 2023, and up to three were monitored at a time in 2024.
+
+Operations were performed on roadways across many parts of the state of Indiana, including a range of different terrain conditions, varying from flat plains in the north and center of the state to more rugged hills in the south.
+
+Two key pieces of equipment were used to monitor mowing operations: a telematics logging unit (see @Sec:methods_iso) and a timelapse camera (see @Sec:methods_camera). In the second year, one additional piece was added to the monitoring system: of a pair of remote GPS trackers (Apple, Cupertino, CA; and Samsung, Ridgefield Park, NJ), shown as callout `(1)` in @Fig:int24.
+
+![The operations monitoring equipment as deployed in a tractor in July 2024. (1) The remote GPS trackers, which allowed easily locating monitored tractors and real-time indication of activity. (2) The telematics logging system, as discussed in @Sec:methods_iso. (3) The camera system used for visual recordings, programmed as explained in @Sec:methods_camera.](img/internal_2024.jpg){#fig:int24 width=5in}
+
+## Telematics Logging {#sec:methods_iso}
 Telematics were logged using a Purdue ISOBlue system [@Balmos_IsoblueAvenaFramework_2022], shown in @Fig:ISOBlue. These systems record all messages on the attached CAN bus, time and location as received from GPS, and have the capability to be remotely accessed over a cellular data connection. These devices were chosen because they are open-source [@OatsCenter_IsoblueHardwareAvena_2023] and technical support was readily available from local colleagues. Logged data was stored in three SQL tables; one for GPS data, one for CAN data, and one for cellular data. The GPS table contains columns for timestamps, latitude, and longitude. The CAN table contains columns for timestamps, network interface, message ID, and message data.
 
 ![A Purdue ISOBlue system.](img/isoblue.png){#fig:ISOBlue width=3in}
@@ -106,10 +110,12 @@ GPS data was recorded at a sample rate of 1 Hz. To calculate the ground speed of
 
 All CAN messages transmitted on each monitored tractor's ISOBUS were recorded to logs. The only messages used for this study were those with a parameter group number (PGN) of FE43 and FEF1, which contain data about the power take-off (PTO) used by the towed mower.
 
-### Video Recording {#sec:methods_camera}
-Timelapses were recorded using a Hero 8 Black action-sports camera (GoPro, San Mateo, CA). Cameras were mounted in rugged metal motorsports frames, as shown in @Fig:camera. These systems were flashed with an experimental firmware [@Newman_GoproLabs_2024] that allows recordings to be triggered programmatically in response to different conditions. Cameras were triggered to record by "keyed" power (power only enabled when the tractor is switched on), with an additional delay provided to encourage recording only mowing operations, not any initial preparations. Keyed power was provided through a custom wire harness, which included a DC-DC converter to take in the tractor's 12V power and output 5V power for the camera's USB connector. Recording was programmed to stop automatically after keyed power was switched off.
+## Video Recording {#sec:methods_camera}
+Timelapses were recorded using a Hero 8 Black action-sports camera (GoPro, San Mateo, CA). Cameras were mounted in rugged metal motorsports frames, as shown in @Fig:camera. These systems were flashed with an experimental firmware [@Newman_GoproLabs_2024] that allows recordings to be triggered programmatically in response to different conditions. GPS metadata was extracted from video timelapses using an open-source python program [@Casillas_Gopro2gpx_2023].
 
 ![The type of camera and mounting frame used in this study.](img/camera.jpg){#fig:camera width=3in}
+
+Cameras were originally triggered to record by "keyed" power (power only enabled when the tractor is switched on), with an additional delay provided to encourage recording only mowing operations, not any initial preparations. Keyed power was provided through a custom wire harness, which included a DC-DC converter to take in the tractor's 12V power and output 5V power for the camera's USB connector. Recording was programmed to stop automatically after keyed power was switched off.
 
 In the configuration used first, the program took wide-angle high-resolution photographs at a sample rate of 1 Hz, each saved as a separate file so that any possible corruption would affect only a single frame. This configuration used a delay of 30 minutes after keyed power was switched on, putting the camera to sleep for that duration. The logic of this configuration is summarized in @Fig:config1.
 
@@ -123,35 +129,13 @@ The third and most advanced configuration used during the 2023 season recorded w
 
 ![A diagram describing how keyed power and GPS controls timelapse recordings in the camera's third configuration.](img/config3.pdf){#fig:config3}
 
-GPS metadata was extracted from video timelapses using an open-source python program [@Casillas_Gopro2gpx_2023].
+To address shortcomings identified in Year 1 methods, new firmware configurations were developed for Year 2.
 
-Cameras were deployed at the start of the mowing season and memory cards were rotated every two weeks during operational periods. Remote tracking was not available, so monitored tractors were located each time by word-of-mouth from the mowing foreman.
+The final firmware configurations mostly revolved around two major changes: removing the camera battery, which allowed simple circuit physics to replace the software-based keyed power trigger, and saving the firmware configuration into nonvolatile memory so that settings were reliably retained during powered-off periods. The GPS-based speed trigger was retained from the third configuration shown in @Fig:config3, to encourage reliable GPS metadata in recorded videos. Additionally, the sleeping period was removed, such that even short periods of movement after power-on would be recorded. The logic of this configuration is summarized in @Fig:config4. The grace period for intermittent stops (hysteresis) was initially tested as 5 minutes, but later changed to 30 minutes (as is shown in the figure). The only change to the firmware configurations after that development was in enabling "large chapter support" so that very long videos would not be broken up into multiple smaller files.
 
-### Video Processing {#sec:methods_video}
-Visual recordings were analyzed by both manual review and computer vision programs. Manual reviewers watched all footage and noted how many obstacles were encountered, what kinds of obstacles were encountered, the nature of each encounter (successful avoidance, non-destructive touch, or destructive collision), as well as any unusual circumstances encountered [@Sprague_AnalyzingVideoIsobus_2024]. Two computer vision programs were used in order to quantify two different things: an instance segmentation model, which helped detect how much time the mower operated on road shoulders and lane surfaces, and a classification model, which helped identify interactions with obstacles and the circumstances in which they were encountered.
+![A diagram describing how keyed power and GPS controls timelapse recordings in the camera's latest configuration.](img/config4.pdf){#fig:config4 height=2in}
 
-#### Instance Segmentation
-The first computer vision program was an instance segmentation model, trained based on mowing videos annotated by hand [@Sprague_ProgramAnnotateVideos_2024]. The model was based on `YOLOv8-Seg` [@Jocher_UltralyticsYolov8_2023] and segments were assigned one of twenty classes (with the most important being "road", "shoulder", "grass", and "mower"). The full list of possible classes is given in @Tbl:segments, and an example of a segmented image is shown in @Fig:segmented.
-
-The instance segmentation results were post-processed to determine the mower's position relative to the road and shoulder. This was achieved by projecting the road and shoulder detections to the bottom edge of the image, and a pixel overlap calculation between the detected edge of the mower and these features allowed for objective and quantitative estimation of the mower's position relative to the road and shoulder.
-
-|  ID | Name     |  ID | Name      |  ID | Name           |  ID | Name          |
-| --: | :------- | --: | :-------- | --: | :------------- | --: | :------------ |
-|   0 | Road     |   5 | -         |  10 | Shoulder       |  15 | Roadkill      |
-|   1 | Grass    |   6 | Vehicle   |  11 | Drain          |  16 | Traffic Cone  |
-|   2 | Mower    |   7 | Human     |  12 | Bridge Barrels |  17 | Mailbox       |
-|   3 | Sign     |   8 | Gravel    |  13 | Post           |  18 | Branches      |
-|   4 | Building |   9 | Guardrail |  14 | Litter         |  19 | Cable Barrier |
-
-: The classes available for polygons identified via image segmentation [@Sprague_ProgramAnnotateVideos_2024]. {#tbl:segments}
-
-![An example output from the instance segmentation model. Segments identified: grass (green), mower (pink), road (blue), shoulder (dark red), sign (red), buildings (cyan), and vehicles (yellow).](img/segmented.png){#fig:segmented height=3.5in}
-
-#### Classification Model
-A complementary classification model was used to predict relevant labels directly from input images, without requiring instance segmentation. This model takes an image as input and will output labels indicating the mower's position relative to the shoulder or road, wing orientation, operation mode (normal mow, transit, maneuver), and obstacle type (if applicable). Initially, a binary classification approach was considered to classify the mower as "on" or "off" the road/shoulder. However, due to instances where the mower's position was ambiguous, this approach was not feasible. Instead, the model was trained to output a continuous value representing the distance of the mower from the edge of the road or shoulder, with positive values indicating on-road/shoulder position and negative values denoting off-road/shoulder position.
-
-A specialized annotation tool [@Sprague_ProgramAnnotateVideos_2024] was used to integrate results from both the instance segementation and the classification model, streamlining the annotation and manual verification process. The tool enabled automated video analysis, fast-forwarding to potential maneuver events detected by the classification model. Users could then review and edit specific details of each event, facilitating efficient annotation approximately four times faster than fully manual methods.
-
+Cameras were deployed at the start of the mowing season and memory cards were periodically rotated during operational periods. Remote tracking was not available in 2023, so monitored tractors were located each time by word-of-mouth from the mowing foreman. As this was found to be unreliable and difficult to organize, real-time GPS trackers were added for the 2024 season (see @Fig:int24) to simplify the logistics of maintenance.
 
 ## Validation Process
 ### Manual Reliability Testing
@@ -180,51 +164,42 @@ The electrical design of the system is straightforward. An ESP32 microcontroller
 ![Block diagram of the electronics powering and controlling the robotic test rig.](img/electronics.pdf){#fig:electronics}
 
 #### Automated Testing Schedule {#sec:schedule}
-The most important metric for determining whether a camera configuration is effective is whether it begins recording at the correct times. A simple schedule was devised to check if the camera would trigger reliably: five minutes "off", with the test rig not moving and the camera power disabled, alternating with periods of ten minutes "on", with the camera powered and in motion. The final camera configuration, explained in @Sec:methods_camera2, was tested for a total of 11 cycles.
+The most important metric for determining whether a camera configuration is effective is whether it begins recording at the correct times. A simple schedule was devised to check if the camera would trigger reliably: five minutes "off", with the test rig not moving and the camera power disabled, alternating with periods of ten minutes "on", with the camera powered and in motion. The final camera configuration, explained in @Fig:config4, was tested for a total of 11 cycles.
 
 The videos recorded by the automatic schedule were checked for duration and GPS metadata. A cycle was qualitatively considered as "success" if the camera correctly detected movement and at some point started recording. The quantitative measure of success was the ratio of recording time to moving time.
 
-## Year 2
-[This section will explain the materials and processes used in 2024 in detail.]
+## Video Processing {#sec:methods_video}
+Visual recordings were analyzed by both manual review and computer vision programs. Manual reviewers watched all footage and noted how many obstacles were encountered, what kinds of obstacles were encountered, the nature of each encounter (successful avoidance, non-destructive touch, or destructive collision), as well as any unusual circumstances encountered [@Sprague_AnalyzingVideoIsobus_2024]. Two computer vision programs were used in order to quantify two different things: an instance segmentation model, which helped detect how much time the mower operated on road shoulders and lane surfaces, and a classification model, which helped identify interactions with obstacles and the circumstances in which they were encountered.
 
-The second studied mowing season lasted from May 2024 through October 2024. Data collection systems and procedures were based on a refinement of those from the previous year. Mowing operations were performed by INDOT contractors with privately owned equipment, as shown in @Fig:mower.
+### Instance Segmentation
+The first computer vision program was an instance segmentation model, trained based on mowing videos annotated by hand [@Sprague_ProgramAnnotateVideos_2024]. The model was based on `YOLOv8-Seg` [@Jocher_UltralyticsYolov8_2023] and segments were assigned one of twenty classes (with the most important being "road", "shoulder", "grass", and "mower"). The full list of possible classes is given in @Tbl:segments, and an example of a segmented image is shown in @Fig:segmented.
 
-The tractors used consisted of Maxxum 115 and 125 tractors (Case IH, Racine, WI). Towed mowers were various models of flex-wing rotary cutters 15 feet in width (Brush Hog, Selma, AL). Up to three tractors were monitored at a time. Additional equipment was added to the monitoring system compared to the previous year: of a pair of remote GPS trackers (Apple, Cupertino, CA; and Samsung, Ridgefield Park, NJ), shown as callout `(1)` in @Fig:int24.
+The instance segmentation results were post-processed to determine the mower's position relative to the road and shoulder. This was achieved by projecting the road and shoulder detections to the bottom edge of the image, and a pixel overlap calculation between the detected edge of the mower and these features allowed for objective and quantitative estimation of the mower's position relative to the road and shoulder.
 
-![The operations monitoring equipment as deployed in a tractor in July 2024. (1) The remote GPS trackers, which allowed easily locating monitored tractors and real-time indication of activity. (2) The telematics logging system, as discussed in @Sec:methods_iso. (3) The camera system used for visual recordings, programmed as explained in @Sec:methods_camera2.](img/internal_2024.jpg){#fig:int24 width=5in}
+|  ID | Name     |  ID | Name      |  ID | Name           |  ID | Name          |
+| --: | :------- | --: | :-------- | --: | :------------- | --: | :------------ |
+|   0 | Road     |   5 | -         |  10 | Shoulder       |  15 | Roadkill      |
+|   1 | Grass    |   6 | Vehicle   |  11 | Drain          |  16 | Traffic Cone  |
+|   2 | Mower    |   7 | Human     |  12 | Bridge Barrels |  17 | Mailbox       |
+|   3 | Sign     |   8 | Gravel    |  13 | Post           |  18 | Branches      |
+|   4 | Building |   9 | Guardrail |  14 | Litter         |  19 | Cable Barrier |
 
-Operations were performed on roadways across many parts of the state of Indiana, including a range of different terrain conditions, varying from flat plains in the north and center of the state to more rugged hills in the south.
+: The classes available for polygons identified via image segmentation [@Sprague_ProgramAnnotateVideos_2024]. {#tbl:segments}
 
-### Telematics Logging
-[This section will explain the ISOBlue and the data recorded with it. It will explain the details used in processing the recordings.]
+![An example output from the instance segmentation model. Segments identified: grass (green), mower (pink), road (blue), shoulder (dark red), sign (red), buildings (cyan), and vehicles (yellow).](img/segmented.png){#fig:segmented height=3.5in}
 
-Telematics were logged using a Purdue ISOBlue system [@Balmos_IsoblueAvenaFramework_2022], as discussed in @Sec:methods_iso. GPS data was recorded at a sample rate of 1 Hz. To calculate the ground speed of the monitored tractor, the haversine method [@Deniau_CalculateDistance2_2024] was used to find the distance between each consecutive coordinate pair, and this was divided by the difference between associated timestamps to get the speed.
+### Classification Model
+A complementary classification model was used to predict relevant labels directly from input images, without requiring instance segmentation. This model takes an image as input and will output labels indicating the mower's position relative to the shoulder or road, wing orientation, operation mode (normal mow, transit, maneuver), and obstacle type (if applicable). Initially, a binary classification approach was considered to classify the mower as "on" or "off" the road/shoulder. However, due to instances where the mower's position was ambiguous, this approach was not feasible. Instead, the model was trained to output a continuous value representing the distance of the mower from the edge of the road or shoulder, with positive values indicating on-road/shoulder position and negative values denoting off-road/shoulder position.
 
-All CAN messages transmitted on each monitored tractor's ISOBUS were recorded to logs. The only messages used for this study were those with a parameter group number (PGN) of FE43 and FEF1, which contain data about the power take-off (PTO) used by the towed mower.
-
-### Video Recording {#sec:methods_camera2}
-[This section will explain the GoPro and configuration settings used in 2024. It will also describe the process used to develop the configurations found.]
-
-Timelapses were recorded using a Hero 8 Black action-sports camera (GoPro, San Mateo, CA), mounted in rugged metal motorsports frames and flashed with an experimental firmware [@Newman_GoproLabs_2024], as discussed in @Sec:methods_camera. To address shortcomings identified in Year 1 methods, new firmware configurations were developed for Year 2.
-
-The final firmware configurations mostly revolved around two major changes: removing the camera battery, which allowed simple circuit physics to replace the software-based keyed power trigger, and saving the firmware configuration into nonvolatile memory so that settings were reliably retained during powered-off periods. The GPS-based speed trigger was retained from the third configuration explained in @Sec:methods_camera, to encourage reliable GPS metadata in recorded videos. Additionally, the sleeping period was removed, such that even short periods of movement after power-on would be recorded. The logic of this configuration is summarized in @Fig:config4. The grace period for intermittent stops (hysteresis) was initially tested as 5 minutes, but later changed to 30 minutes (as is shown in the figure). The only change to the firmware configurations after that development was in enabling "large chapter support" so that very long videos would not be broken up into multiple smaller files.
-
-![A diagram describing how keyed power and GPS controls timelapse recordings in the camera's latest configuration.](img/config4.pdf){#fig:config4 height=2in}
-
-### Video Processing
-[This section will explain the video annotation methods used in 2024. It will provide detailed explanations of the AI and manual review process.]
-
-Visual recordings were analyzed by both manual review and computer vision programs, much the same as explained in @Sec:methods_video. More sophisticated computer vision programs were developed for analyzing the larger dataset, open-source and available online [@Sprague_ProgramAnnotateVideos_2024].
+A specialized annotation tool [@Sprague_ProgramAnnotateVideos_2024] was used to integrate results from both the instance segementation and the classification model, streamlining the annotation and manual verification process. The tool enabled automated video analysis, fast-forwarding to potential maneuver events detected by the classification model. Users could then review and edit specific details of each event, facilitating efficient annotation approximately four times faster than fully manual methods.
 
 
 \clearpage
 # Results & Discussion
-## Year 1
-[This section will present the data gathered in 2023 and identify basic trends.]
+## Data Collection System Uptime {#sec:uptime}
+[This section will show the percentage uptime for each component of the original data collection system, as well as the uptime of the system as a whole, during each season and how they compare to one another.]
 
-### Data Collection System Uptime {#sec:uptime_2023}
-[This section will show the percentage uptime for each component of the original data collection system, as well as the uptime of the system as a whole, during the 2023 season.]
-
+### First Season (2023) {#sec:uptime_2023}
 Teething issues with the system meant that operations monitoring suffered from poor uptime throughout the first year's deployment. An overview of the uptime for telematics, cameras, and both simultaneously is shown in @Fig:uptime_2023, derived from the GPS data recorded by both systems.
 
 ![Timeline showing when different parts of the data collection system were properly recording during the 2023 mowing season. There were significant gaps in coverage both on individual tractors and across the effort for the season as a whole.](img/uptime_2023.png){#fig:uptime_2023 height=2.5in}
@@ -239,25 +214,55 @@ Another simple measure of uptime is the geographical coverage of the system thro
 
 ![Counties in which fully monitored mowing operations took place during 2023.](img/counties_2023.png){#fig:counties height=3in}
 
-### Obstacle Collisions
-[This section will identify the obstacles encountered in 2023 and note which were most common, which were most often damaged, and so forth.]
+### Second Season (2024)
+The system was far more reliable in the second season, as many of the teething issues were characterized and solved during the off-season. An overview of the uptime for telematics, cameras, and both simultaneously is shown in @Fig:uptime_2024, derived from the GPS data recorded by both systems.
 
-Although limited data was collected, there was still enough to measure a significant number of encounters with many kinds of obstacles. The number of encounters with ten kinds of obstacles is shown in @Fig:obstacles_2023, segregated by road type (rural roads or highways).
+![Timeline showing when different parts of the data collection system were properly recording during the 2024 mowing season. There is significantly more and better coverage than the previous year's timeline shown in @Fig:uptime_2023.](img/uptime_2024.png){#fig:uptime_2024 height=2.5in}
 
-![Obstacle encounters in 2023 mowing data. Signs and posts were the most common by far, though encounters that actually damaged obstacles were rare. Note that two bars extend beyond the edge of the plot; the length of each extending bar is annotated onto the plot numerically.](img/obstacles_2023.png){#fig:obstacles_2023 height=3.5in}
+There are some gaps in this coverage, albeit less than in 2023. In some cases (for example, Tractor02 in July), cameras did not record even though the telematics system recorded activity. Some of these were due to flaws in the human interface to the system; improperly anchored strain relief on some units meant that the camera's power cable could be disconnected if the operator opened the window too widely. Once this issue was identified, a more controlled strain relief mount---and some tape to reinforce any loose connections---was installed in all systems, and that particular issue was effectively prevented for the rest of the season.
+
+Another human interfacing flaw identified during this season was that of the switched power connection to the tractor's electrical system. Due to the geometry of the connector and its placement in the cabin, it could be crushed by the operator's chair if positioned in a certain way. The solution chosen for this problem was simply to remove the systems from tractors with especially tall operators (who needed their seats to be in the problematic positions) and re-deploy them in tractors with a less destructive operator. As with the window problem, the chosen solution was able to prevent this issue from happening to the same system again. However, it must be acknowledged that this is only a stopgap solution. A more universal answer would be to use a specialized right-angle or low-profile connector that leaves proper clearance for the operator's seat.
+
+Another simple measure of uptime is the geographical coverage of the system throughout the season. @Fig:counties2 shows all counties in which GPS-synchronized data was recorded in 2024 on both camera and telematics simultaneously, as well as all counties in which partial, non-synchronized GPS data was recorded.
+
+![Counties in which monitored mowing operations took place during 2024.](img/counties_2024.png){#fig:counties2 width=3in}
+
+### Year-to-Year Trends
+A chart showing the difference in recording times is shown in @Fig:uptime_hours, proving that 2024 had improvements in the system on all fronts.
+
+![Number of unique hours recorded by each piece of equipment and simultaneously recorded by both. The camera reliability increased by even more than the telematics, though both were successful.](img/uptime_hours.png){#fig:uptime_hours width=5in}
+
+## Obstacle Collisions
+[This section will identify the obstacles encountered and note which were most common, which were most often damaged, and so forth.]
+
+Although limited data was collected, there was still enough to measure a significant number of encounters with many kinds of obstacles. The number of encounters with up to ten kinds of obstacles are shown in @Fig:obs23r and @Fig:obs23h for rural roads or highways, respectively.
+
+![A plot of the obstacles encountered during 2023 mowing operations on rural roads.](img/obstacles_2023r.png){#fig:obs23r width=6in}
+
+![A plot of the obstacles encountered during 2023 mowing operations on highway roads.](img/obstacles_2023h.png){#fig:obs23h width=6in}
 
 Posts (a catch-all category for any narrow vertical obstacles that were not road signs) and signs were the most common obstacles by far, with more posts in highway environments and more signs along rural roads. Mailboxes were quite common along rural roads but absent on highways.
 
-In all cases, operators were generally successful in maneuvering around obstacles without touching them. In the situations where the mower made contact with an obstacle, most of the time the obstacle was left without any permanent damage (only "touched"). However, a small but quantifiable number of situations ended with the mower permanently damaging the obstacle (the darkest bars in @Fig:obstacles_2023). While these are regrettable, this provides an effective baseline level of performance for normal human operators performing conventional roadside vegetation control.
+In all cases, operators were generally successful in maneuvering around obstacles without touching them. In the situations where the mower made contact with an obstacle, most of the time the obstacle was left without any permanent damage (only "touched"). However, a small but quantifiable number of situations ended with the mower permanently damaging the obstacle (the darkest bars in @Fig:obs23r and @Fig:obs24h). While these are regrettable, this provides an effective baseline level of performance for normal human operators performing conventional roadside vegetation control.
 
 This data could be useful for comparing against other vegetation control systems, including autonomous mowing robots, as a benchmark that should be met or exceeded before implementation. Additionally, this data shows which classes of obstacles are more common than others; new systems could prioritize development towards handling the most common kinds of obstacles first.
+
+Preliminary results are available for the 2024 season and are shown plotted in @Fig:obs24r and @Fig:obs24h, but they have yet to be normalized since total distance mowed has not yet been calculated. 
+
+![A plot of the obstacles encountered during 2024 mowing operations on rural roads.](img/obstacles_2024r.png){#fig:obs24r width=6in}
+
+![A plot of the obstacles encountered during 2024 mowing operations on highway roads.](img/obstacles_2024h.png){#fig:obs24h width=6in}
 
 ### On-Road Operations
 [This section will note how long the mowers spent on-shoulder and on-road during operation. It will also mention how long was spent in transit (on-road and not operating).]
 
 Another measurement taken of mower performance was the proportion of time spent with a mower extending onto the road surface, including the shoulder if not the actual road lanes. These measurements are shown in @Fig:shoulder_2023, segregated by road type.
 
-![Operators were much more likely to drive on-road on rural roads.](img/shoulder_2023.png){#fig:shoulder_2023 height=3in}
+![Operators were much more likely to drive on-road on rural roads.](img/shoulder_2023.png){#fig:shoulder_2023 height=2.5in}
+
+PRELIMINARY measurements for 2024 are shown in @Fig:shoulder24, again segregated by road type.
+
+![Operators spent a significant portion of their time driving at least partially on the shoulder, if not on the road lanes.](img/shoulder_2024.png){#fig:shoulder24 height=2.5in}
 
 Tractor operators were much more likely to tow their mower on-road or at least on-shoulder on rural roads. A significant reason for this is the very narrow shoulder on many of those roads; there often is not enough space for the mower to even fit entirely off-road. While this practice is still risky compared to staying off the road entirely, it is less risky on rural roads where traffic is usually lower-speed and less crowded.
 
@@ -294,46 +299,6 @@ After the many issues with power failures and GPS metadata in the 2023 mowing se
 
 The movements in which the camera was late to record, or failed to record at all, were due to the camera failing to obtain a GPS signal and positively detect its movement. However, as shown in the movements which started recording late, the camera configuration was still flexible enough to start recording as soon as a good enough signal could be obtained, even if it was not directly correlated with the keyed power input. This adds some robustness to the system for long-term deployments in places that may have intermittent GPS signal, such as along roads with tunnels, steep cliffs, or heavy foliage overhead.
 
-## Year 2
-[This section will present the data gathered in 2024 and identify basic trends.]
-
-### Data Collection System Uptime
-[This section will show the percentage uptime for each component of the original data collection system, as well as the uptime of the system as a whole, during the 2024 season.]
-
-The system was far more reliable in the second season, as many of the teething issues were characterized and solved during the off-season. An overview of the uptime for telematics, cameras, and both simultaneously is shown in @Fig:uptime_2024, derived from the GPS data recorded by both systems.
-
-![Timeline showing when different parts of the data collection system were properly recording during the 2024 mowing season. There is significantly more and better coverage than the previous year's timeline shown in @Fig:uptime_2023.](img/uptime_2024.png){#fig:uptime_2024 height=2.5in}
-
-There are some gaps in this coverage, albeit less than in 2023. In some cases (for example, Tractor02 in July), cameras did not record even though the telematics system recorded activity. Some of these were due to flaws in the human interface to the system; improperly anchored strain relief on some units meant that the camera's power cable could be disconnected if the operator opened the window too widely. Once this issue was identified, a more controlled strain relief mount---and some tape to reinforce any loose connections---was installed in all systems, and that particular issue was effectively prevented for the rest of the season.
-
-Another human interfacing flaw identified during this season was that of the switched power connection to the tractor's electrical system. Due to the geometry of the connector and its placement in the cabin, it could be crushed by the operator's chair if positioned in a certain way. A close-up view of the problematic connector is shown in @Fig:clearance. The solution chosen for this problem was simply to remove the systems from tractors with especially tall operators (who needed their seats to be in the problematic positions) and re-deploy them in tractors with a less destructive operator. As with the window problem, the chosen solution was able to prevent this issue from happening to the same system again. However, it must be acknowledged that this is only a stopgap solution. A more universal answer would be to use a specialized right-angle or low-profile connector that leaves proper clearance for the operator's seat.
-
-![There is very little clearance (orange) between the operator's chair (light green) and the rigid vertical connector that supplies switched power to the camera (dark red).](img/clearance.jpg){#fig:clearance width=5in}
-
-Another simple measure of uptime is the geographical coverage of the system throughout the season. @Fig:counties2 shows all counties in which GPS-synchronized data was recorded in 2024 on both camera and telematics simultaneously, as well as all counties in which partial, non-synchronized GPS data was recorded.
-
-![Counties in which monitored mowing operations took place during 2024.](img/counties_2024.png){#fig:counties2 width=3in}
-
-### Obstacle Collisions
-[This section will identify the obstacles encountered in 2024 and note which were most common, which were most often damaged, and so forth.]
-
-Preliminary results are available and shown plotted in @Fig:obs24r and @Fig:obs24h, but they have yet to be normalized since total distance mowed has not yet been calculated. 
-
-![A plot of the obstacles encountered during 2024 mowing operations on rural roads.](img/obstacles_2024r.png){#fig:obs24r height=3.5in}
-
-![A plot of the obstacles encountered during 2024 mowing operations on highway roads.](img/obstacles_2024h.png){#fig:obs24h height=3.5in}
-
-### On-Road Operations
-[This section will note how long the mowers spent on-shoulder and on-road during operation. It will also mention how long was spent in transit (on-road and not operating).]
-
-Another measurement taken of mower performance was the proportion of time spent with a mower extending onto the road surface, including the shoulder if not the actual road lanes. These measurements are shown in @Fig:shoulder24, segregated by road type.
-
-![Operators spent a significant portion of their time driving at least partially on the shoulder, if not on the road lanes.](img/shoulder_2024.png){#fig:shoulder24}
-
-Tractor operators were much more likely to tow their mower on-road or at least on-shoulder on rural roads. A significant reason for this is the very narrow shoulder on many of those roads; there often is not enough space for the mower to even fit entirely off-road. While this practice is still risky compared to staying off the road entirely, it is less risky on rural roads where traffic is usually lower-speed and less crowded.
-
-These results may inspire a change in operating procedures to encourage safer practices, or spur the development of new roadside vegetation control technologies that do not require such wide equipment that it cannot fit on narrow rural shoulders.
-
 
 \clearpage
 # Conclusion
@@ -342,9 +307,6 @@ These results may inspire a change in operating procedures to encourage safer pr
 ## Year-to-Year Trends
 [This section will compare the 2023 and 2024 data sets, comparing and contrasting the results.]
 
-A chart showing the difference in recording times is shown in @Fig:uptime_hours, proving that 2024 had improvements in the system on all fronts.
-
-![Number of unique hours recorded by each piece of equipment and simultaneously recorded by both. The camera reliability increased by even more than the telematics, though both were successful.](img/uptime_hours3.png){#fig:uptime_hours}
 
 ## Evidence-Based Mowing Standards
 [This section will present quantitative standards that autonomous mowers must meet in order to match the performance of human-operated equipment.]
