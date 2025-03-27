@@ -9,6 +9,7 @@ link-citations: true
 geometry: "left=1in, right=1in, top=1in, bottom=1in"
 secnumdepth: 3
 toc: true
+lof: true
 figPrefix: "figure"
 secPrefix: "section"
 tblPrefix: "table"
@@ -24,76 +25,104 @@ calendarlink: https://www.purdue.edu/academics/ogsps/about/calendar/index.html
 \doublespacing \linenumbers
 \clearpage
 # Introduction {#sec:intro}
-[This chapter will clearly define the research problem and the motivation for research.]
+The purpose of this chapter is to define the research problem and the motivation for research. It will provide context for understanding and clearly state the central thesis and goals of the rest of the document.
+
+## Project Context
+In Indiana, thousands of miles of state roads are flanked by vegetation and require regular mowing and other maintenance in order to remain safe and effective for public traffic. Currently, this maintenance is performed with large mowers towed by tractors and teams of pedestrian workers with handheld trimmers. While this maintenance routine is functional, it is expensive and labor-intensive, and it exposes workers to serious safety risks as they work adjacent to high-speed traffic. The Indiana Department of Transportation (INDOT) is interested in autonomous mowers as a potential technology for reducing the risks and costs associated with that work. This project aims to quantify the performance of the current-day human-operated mowing regime in order to characterize the requirements for and feasibility of future autonomous machines for roadside mowing.
 
 ## Thesis & Goals
-[This section will clearly explain the central thesis and goals of the paper. It will draw a direct line from the initial problem to the final answer proved in this document.]
-
 **Programmable action-sports cameras and standard agricultural telematics loggers can be used to record useful data about roadside mowing operations for understanding current operations and informing future developments.** This study describes a project in which a data collection process was developed to meet the following goals:
 
  1. Characterize real-world mowing environments on Indiana roadways.
  2. Identify challenges encountered by mowers on Indiana roadways.
  3. Quantify mower behaviors and responses to encountered conditions.
 
+Additional research is also indicated for developing appropriate computer vision systems to support the project goals, as large volumes of visual data must be collected to effectively study this topic.
+
 \clearpage
 # Background
-[This chapter will demonstrate understanding of the subject and all associated literature.]
+The purpose of this chapter is to provide the reader with background knowledge necessary to understand the broader project outlined in the prior chapter. @Sec:veg gives an overview of roadside vegetation and the various technologies and protocols used to manage its growth. @Sec:telematics covers telematics logging in relevant industries and explains several of the challenges inherent to such data collection in the context of roadside mowing. Penultimately, @Sec:var discusses the use of cameras to record visual data about machine activity and the environment and decisions faced by equipment operators during roadside mowing operations. The final @Sec:visual_odo gives a brief introduction to *visual odometry,* a computer vision task focused on estimating the speed of and distance traveled by a photographed moving object.
 
-## Roadside Mowing
-[This section will provide a deep literature review of roadside mowing, identifying typical methods, its purpose, importance, and the unique challenges inherent to the work.]
+## Roadside Mowing {#sec:veg}
+The purpose of this section is to provide a deep literature review of roadside vegetation and its management. The importance and multifaceted functions of the vegetation itself is given in @Sec:row_veg. A discussion on available management methods, both conventional and alternative options, is given in @Sec:veg_management. The unique challenges of the work, and an explanation of why novel technologies are necessary, are given in @Sec:new_tech.
 
-### Right-of-Way Vegetation
-[This section will explain the reasons vegetation is tolerated in right-of-way spaces. It will also provide a review of the types of vegetation found in these environments in Indiana.]
+### Right-of-Way Vegetation {#sec:row_veg}
+Vegetation is a common fixture along roads all throughout Indiana and much of the United States. Roadside vegetation can serve many functions, and different configurations can offer different trade-offs for their effects on the environment, road traffic, and safety. A major function of vegetation in right-of-way spaces is erosion control [@Milton_HandbookRoadEcology_2015], as bare soil will often wash out during preciptation and deposit large quantities of sediment downstream [@Richardson_PracticesErosionControl_1970; @Bochet_FactorsControllingVegetation_2004; @Baets_ImpactRootArchitecture_2007; @Wang_OptimizingRoadsideSlope_2024]. Roadside vegetation can also help control multiple types of pollution. It can reduce the total amount of water runoff, preventing contaminants from directly washing deeper into the watershed [@Wang_OptimizingRoadsideSlope_2024], and automotive dust particles containing heavy metals like cadmium, lead, nickel, and zinc can be captured by roadside trees and other leafy plants [@SzyszlakBarglowicz_FunctionRoadsideVegetation_2013], preventing the fine particulate matter [@Ozdemir_MitigationImpactRoadside_2019] and other types of air pollution [@Tong_RoadsideVegetationBarrier_2016] from drifting far from the roadway. Noise pollution, too, is reduced by roadside vegetation [@Reethof_EffectPlantingsRadiation_1973], even relatively small barriers [@Kalansuriya_EffectRoadsideVegetation_2009]. In addition, planting natural scenery along roadsides can have psychological effects on passing drivers, potentially reducing stress and crash rates [@Fitzpatrick_InfluenceClearZone_2014] and affecting drivers' speed and lane-centering behavior [@Calvi_DoesRoadsideVegetation_2015]. Beyond that, species chosen for these roles need not be the purely utilitarian options that are often chosen, such as non-native grasses and trees. Using beautiful plants for the task, such as native wildflowers, can improve the aesthetic appeal of the roadside environment without compromising on their functions [@Dana_WildflowersIndianaHighways_1996; @Isaacs_MaximizingArthropodMediated_2009; @Ebbers_EstablishmentWildflowerIslands_2024], though sometimes native plants may require multiple seasons to become fully established [@Herold_IntegratedVegetationManagement_2014; @Barnes_NativeWarmSeason_2000]. Additionally, roadside vegetation can provide habitats for many organisms in the local ecosystem, and changes to the vegetation can have significant ecological impacts [@Forman_RoadEcology_2002; @Valko_RoadsideGrasslandRestoration_2023], so the choice of plant species and how they are maintained should be chosen with careful regard to their effects on local wildlife [@Ryu_QuantifyingBenefitsRoadside_2025].
 
-Controlling roadside vegetation is an important part of infrastructure maintenance. While the plants can perform important functions such as noise and erosion control, out-of-control vegetation can reduce visibility, obscure signage, and even damage road surfaces [@Milton_HandbookRoadEcology_2015; @Johnson_BestPracticesHandbook_2008]. For these reasons, keeping roadside vegetation present but trimmed to a reasonable level throughout the right-of-way is required for the safety and longevity of a road system.
+However, controlling that roadside vegetation is an important part of infrastructure maintenance. While the plants perform many important functions, as explained in detail above, poorly controlled vegetation can reduce visibility, affect snow accumulation, cause sudden changes in wind pressure [@KocurBera_RoadsideVegetationSafety_2015], obscure signage, and damage road surfaces [@Johnson_BestPracticesHandbook_2008; @Milton_HandbookRoadEcology_2015]. For these reasons, keeping roadside vegetation present but trimmed to a reasonable level throughout the right-of-way is critical to ensuring the safety and longevity of a road system.
 
-### Conventional Vegetation Management
-[This section will explain the current vegetation management strategies used in Indiana. It will also review the strengths and weaknesses of these policies.]
+### Vegetation Management {#sec:veg_management}
+The most commonly used methods today are a combination of mowing and chemical herbicides [@Herold_IntegratedVegetationManagement_2014; @Nemec_HowEngineersRoadside_2022]. The Indiana Department of Transportation (INDOT) divides road right-of-way into four zones for vegetation management purposes: Zone 1 is the paved road surface, Zone 2 is the clear zone (for safety purposes), Zone 3 is the selective zone (where only invasive weeds and woody vegetation are removed), and Zone 4 is the outer zone (where only invasive weeds and hazardous tree species are removed) [@FHAOPDER_VegetationManagementToolbox_2015]. The current practice, as recommended by @Herold_IntegratedVegetationManagement_2014, is to mow the clear zone, typically with large flex-wing mowers, and apply selective herbicides to the entire clear zone on a carefully prescribed schedule to minimize its effects on desired grasses while maximizing its effects on unwanted vegetation. The selective zone and outer zone receive herbicide only in spot treatments directly at unwanted plants, not wide-area sprays. Near the edges of obstacles and along steep slopes, mechanical mowing is manually performed with string trimmers, as the heavy equipment used elsewhere cannot access such areas [@Nemec_HowEngineersRoadside_2022].
 
-The most commonly used methods today are a combination of mowing and spot-application of conventional chemical herbicides [@Herold_IntegratedVegetationManagement_2014; @Nemec_HowEngineersRoadside_2022].
+One vegetation management strategy that has been adopted somewhat more recently in INDOT policy is the use of native prairie grasses in place of non-native roadside vegetation. These have been shown to resist droughts and require less maintenance once established [@Herold_IntegratedVegetationManagement_2014], though some studies have found that other nearby species may share genes or otherwise compete with the planted species in later seasons [@Li_SuccessionalEstablishmentMowing_2008]. As native species are supremely well-adapted to the local climate and soil conditions, they effectively defend against weeds, protect sensitive areas, and reduce ecosystem impacts [@Steinfeld_RoadsideRevegetationIntegrated_2007]. A mixture of native species that occupy different ecological niches are recommended, in order to outcompete weeds in all respects. When established in such a manner, native plants tend to require little to no herbicidal treatments, and often require less frequent mowing than artificially introduced species, leading to significantly lower management time and cost requirements in the long run [@Barnes_NativeWarmSeason_2000; @ODell_NativeRoadsidePerennial_2007].
 
-### Other Vegetation Management Technologies
-[This section will describe alternative technologies for vegetation management. It will review the strengths and weaknesses of these options, and explain why they are not used in Indiana.]
+Mowing and chemical herbicides are effective and commonly used throughout the United States for roadside vegetation control, as they can be performed effectively at a reasonable cost. However, there are some concerns with the practice; frequent mowing tends to favor the growth of short, sod-forming grasses [@Li_SuccessionalEstablishmentMowing_2008]. It also upsets the natural succession of roadside species, as it unnaturally disrupts the distribution of light and nutrients, in addition to culling a larger proportion of taller plants than shorter ones [@Ryu_QuantifyingBenefitsRoadside_2025]. Likewise, there are ecological concerns with the use of herbicides, especially when sprayed indiscriminately in wide areas, as is often the most cost-effective method. Overuse can even contribute to agrochemical runoff, a common water pollution concern, and some kinds of herbicides are more broadly toxic than others. As a result, the use of more efficient and environmentally friendly herbicides is recommended over broad-spectrum options [@Li_SuccessionalEstablishmentMowing_2008]. Investing in more native re-vegetation projects, which have a higher upfront cost but require less mowing and less herbicide in later seasons, as discussed in more detail above, is one of the most effective solutions to the environmental concerns expressed here. It continues to be pursued as a long-term priority, but deploying the strategy takes time and not every roadside is perfectly suited for it, so it is not yet omnipresent on Indiana roadways.
 
-Many different technologies can be used to manage roadside vegetation. Beyond conventional mowing and herbicides, there exists mulching, application of alternative organic herbicides, burning [@Barker_AlternativeManagementRoadside_2009], and even exotic technologies like infrared radiation [@Burnham_NonChemicalMethods_2003].
+Beyond conventional mowing and herbicides, there exist several other technologies for vegetation management. Research has been done on the possibility of using mulching or applying alternative organic herbicides [@Barker_AlternativeManagementRoadside_2009], and even exotic technologies like infrared radiation [@Burnham_NonChemicalMethods_2003], but these are not commonly used in Indiana due to their inferior performance and higher cost compared to the standard mowing and chemical treatments discussed previously. One unusual management strategy that could be used in the state is controlled burning. This is most effective in areas that have been replanted with native tall-grass prairie species, as these plants are naturally adapted to surviving periodic brush fires. Such fires can help clear detritus and allow more light to reach slower-growing tall-grasses climbing up from the prairie floor, while most undesired plants have difficulty surviving the brief but intense flames. Prescribed burns can therefore be used to preferentially support the native prairie plants while simultaneously removing invasive weeds and woody brush species [@Brandt_IntegratedRoadsideVegetation_2015].
 
-### Autonomous Mowers
-[This section will provide a deep literature review of autonomous mowing, explaining why it would be a useful extension to conventional vegetation management and what technologies would be necessary to develop before it could be viable.]
+### Safety Requirements and Autonomous Mowers {#sec:new_tech}
+A key risk in roadside maintenance of any kind is the exposure of workers to traffic. This can prove to be dangerous for both the maintenance workers and road travelers in the event of a collision or other accident, potentially resulting in expensive property damage and injuries or even fatalities [@Mardikes_ConstructingDigitalTwin_2025]. As a result, mechanical mowing has been called "the most hazardous" vegetation control method, and it is associated with high costs due to insurance requirements and property damage outlays [@Hyman_BestManagementPractices_1999]. However, large, slow-moving mowers continue to be used because all known alternatives require too much manual labor, environmental impact, or are otherwise logistically infeasible. Given the currently available alternatives, the current strategy generally scores quite well on balancing six key factors: worker safety, public safety, environmental impact, herbicide use, cost and efficiency, and public perception [@TeeterBalin_FeasibilityAlternativeVegetation_2006]. Novel technologies and solutions must be developed in order to improve beyond this status quo.
+
+One technology under development that might address the concerns above is autonomous mowing robots. Adopting robotic mowers would remove the equipment operators from direct exposure to the roadside, protecting them from proximity to traffic and potentially limiting the total number of maintenance workers required to be onsite in the first place [@Arsenault_AutonomousMowingImproving_2010]. Additionally, autonomous mowers could be deployed as a fleet of smaller robots working in concert, rather than as a one large machine. This would present less of a distraction than larger equipment might [@Creed_ImplementationValidationObstacle_2011] and reduce the severity of any collisions, as an accident involving any one small robot would be far less destructive than a collision with the monolithic heavy equipment that is currently used instead [@Mardikes_AutonomousRoadsideMowing_2023].
+
+Autonomous mowers exist on the market today, but they are not suitable for roadside operations. These devices can trace their history to advances built upon remote-controlled mowers in the early 2000s [@Chavez_StudyObjectDetection_2009], such as the Danish research robot CASMOBOT (**C**omputer **A**ssisted **S**lope **Mo**wer Ro**bot**), which explored the basics of driver-assist technology in the leadup to its completion in 2009. CASMOBOT, and similar machines that followed, performs "semi-automatic" mowing, in which a human operator manually drives the machine to set a perimeter around the target area, and then the machine automatically covers all area inside that perimeter. Initial devices in this vein required full-time human supervision, as they did not have any capability for real-time obstacle avoidance [@Jensen_ComputerAssistedSlope_2009]; modern commercial machines are capable of automatically avoiding detected hazards. However, these devices are not yet trustworthy enough for fully autonomous operation, as they can only achieve an acceptable safety rating by maintaining a berth of approximately ten feet (~3 m) from plot edges and all detected obstacles [@Mardikes_ConstructingDigitalTwin_2025]. Given that the clear zone to be mowed along Indiana roadsides (see @Sec:veg_management) is typically 30 feet (~9 m) wide, and often even narrower on rural roads, such limited machines would not be effective for roadside mowing operations.
+
+In order to significantly contribute to right-of-way mowing operations, future autonomous machines must be capable of safely and reliably mowing all the way to the edge of the clear zone, which would put them directly adjacent to active traffic. Another way to significantly contribute to improving roadside mowing would be to replace the workers who manually trim vegetation around the edges of smaller obstacles in the right-of-way, such as signs, guard rails, and streetlamps or utility poles, as large mowing equipment is not precise enough around the bases of those objects. As such, future autonomous machines will need robust edge-following capabilities in order to mow along the edge of either the clear zone or the smaller obstacles discussed above. However, no quantitative measurement has been published to describe the necessary performance at that task in order to match human operators. This thesis aims to gather data that can provide insight on this question, giving quantitative evidence for recommended requirements.
+
+## Agricultural Telematics Logging {#sec:telematics}
+The purpose of this section is to provide a deep literature review of telematics logging for agricultural machinery and related systems. Telematics refers to the collection and transmission of metadata about machine function and operations. The measurement of geospatial data, particularly location and velocity of monitored equipment, is covered in @Sec:GIS. Data available from computer systems embedded in modern machinery and other heavy equipment, as well as the methods for interfacing with and decoding the signals from those computer systems, is covered in @Sec:embedded.
+
+### Geospatial Data {#sec:GIS}
+Geospatial information systems are a critical technology enabling modern agricultural operations. Managing vegetation, whether in fields or along roadsides, always requires knowing where the vegetation is located, and having effective telematics information such as the amount of time that operations spend working on a given area can enable significant planning improvements and efficiency gains [@Skliar_IncreasingPerformancePark_2021]. Geospatial position is measured in the United States through the Global Positioning System (GPS), a type of Global Navigation Satellite System (GNSS). When GPS location is paired with a well-calibrated real-time kinematic (RTK) base station, position can be measured with extremely high precision---to the level of one centimeter---even in rugged terrain [@Marucci_PrecisionFarmingHilly_2017]. As precise timing is an intrinsic part of how any GNSS works [@HofmannWellenhof_GnssGlobalIntroduction_2008], any telematics system that can measure a GPS location can also obtain a very accurate time for each measurement. When the locations are tracked over time, the speed of the telematics system can be determined by simple calculus: the speed is equal to the change in distance for each unit time. Unfortunately, the speed extrapolated from GPS position tends to be noisy, so more effective estimates of speed are often given directly by the GPS sensor, which can accurately measure its own velocity in real-time based on the Doppler shift of signals received from GPS satellites [@HofmannWellenhof_GnssGlobalObservables_2008].
+
+High-precision GPS-RTK location measurements are extremely effective, generally reliable, and relatively straightforward to obtain. However, the technology does have a few potential drawbacks to be aware of. High-quality GPS receivers that can measure position to high accuracy are not inexpensive, which may limit their adoption in certain cases, and the extreme precision enabled by RTK base stations are only available when a given telematics unit has consistent access to the RTK corrections published in real-time. If connectivity with the telematics system is intermittent or unreliable, the levels of precision and accuracy offered by RTK may be unavailable. That said, even non-RTK GPS systems are often still relatively accurate on modern receivers, and they are sufficient to keep accurate time and give a good estimate of the unit's overall location and general movement patterns.
 
 
-## Agricultural Telematics Logging
-[This section will provide a deep literature review of telematics logging in agricultural, industrial, and related contexts. It will discuss the rugged environment in which these activities take place, and explain how common equipment for these fields is designed to handle the conditions.]
+### Embedded Computer Systems {#sec:embedded}
+Modern agricultural machines are often built with sophisticated telematics systems embedded directly from the manufacturer [@Krzyzaniak_UseTelematicsSystems_2022]. Such systems can provide a wide array of different capabilities, including management of a diesel engine and hydraulic transmission, control of any attached implement(s), setting passenger comfort and climate control configurations, tracking geolocation and providing navigation assistance, and even radio communications [@Goltyapin_GlobalTrendsDevelopment_2020]. However, these built-in systems are typically designed to only interface with the manufacturer's proprietary telematics software, with limited ability to extract data outside that ecosystem [@Thomasson_ReviewStateArt_2018]. Many of these systems are connected inside a piece of equipment via a "controller area network" (CAN) bus, which allows all nodes in the network to communicate with all other nodes bilaterally when needed. The most common specification used in agricultural equipment is called ISOBUS, a stricter protocol that is built atop CAN, designed to be as robust and straightforward as possible [@Brodie_BuzzwordIsobus_2023].
 
-### Geospatial Data
-[This section will describe the types of geospatial data recorded by modern telematics systems. It will explain the capabilities of different kinds of GPS technologies and review the strengths and weaknesses of typical systems.]
+ISOBUS enables connecting a wide variety of different kinds of agricultural equipment together, sharing data between the various nodes in the system's embedded network and allowing additional functionality when the appropriate kinds of equipment are attached [@Brodie_BuzzwordIsobus_2023]. One of the most important parts of the vehicle to be monitored with this system is the engine, and the messages submitted to the network by the engine's control unit can report information like the temperature and shaft speed, the vehicle's odometer reading, and the wheel speed. Messages in the ISOBUS system are sent according to the SAE J1939 standard that was originally developed by the automotive industry. J1939 messages are delivered in atomic *CAN frames,* each of which contains a data payload, a parameter group number (PGN) that recipients can use to know how to decode the payload properly, and a source address to identify the sender, as there may be many devices all attached to the same bus [@Pietikaeinen_RemoteIsobusTelematics_2014]. While the J1939 standard recommends several encoding schemes for common kinds of data, not all equipment manufacturers follow those specifications when encoding the data payload attached to CAN frames broadcast by their devices. Significant reverse-engineering efforts may be required to figure out the proper methods to interpret nonstandard CAN messages, but the process is usually feasible---meanings are typically hidden only by obscurity, not serious encryption.
 
-### Embedded Computer Systems
-[This section will describe the types of controller networks typical to modern tractors (i.e. ISOBUS) and the machine data that can be recorded from them. It will explain the way that CAN messages are encoded and decoded, and probably a small passive-aggressive rant about the lack of standards compliance among major manufacturers.]
+The electronics hardware that provides the aforementioned embedded computer systems is usually delicate on its own. Agricultural operations like roadside mowing often require working in very rugged conditions, with heavy vibrations, dust and water ingress, strong solar exposure, and high temperatures. As a result, ISOBUS devices are recommended to require locking, weather-sealed connectors, sturdy cables, and carefully considered mechanical design and material choices in order to effectively withstand such conditions [@Pietikaeinen_RemoteIsobusTelematics_2014].
 
+## Video Activity Recording {#sec:var}
+The purpose of this section is to provide a literature review on the use of video recording technology for understanding agricultural and industrial activity patterns. The utility of using cameras to record human operators and their interactions with their equipment is examined in @Sec:operator_video. The utility of using cameras to record equipment activity during operations is examined in @Sec:mow_video. Finally, a discussion on the environmental and reliability requirements for video recording in agricultural contexts is given in @Sec:rugged_video.
 
-## Video Activity Recording
-[This section will provide a deep literature review of video activity recording in agricultural, industrial, and related contexts.]
+### Operator-Facing Video Capture {#sec:operator_video}
+A common method for studying operator behavior in human factors engineering is to place a camera inside the cabin, recording the operator's interactions with the equipment controls [@Buchholz_ErgonomicsErgonomicAssessment_1997; @Grandi_DesignErgonomicDashboards_2022]. This technique can allow measurement of several metrics, such as working posture, repetitive motions, reaction time, and even certain biometrics, as well as calculated indices for the level of stress and strain that different movements tend to put on parts of the body [@Lowe_ErgonomicsAssessmentMethods_2019; @Greene_VisualizingStressfulAspects_2017; @Valero_MusculoskeletalDisordersConstruction_2016; @Cocca_AssessmentBiomechanicalRisk_2008]. While some of these methods can offer a peripheral view into understanding the decisions that operators make [@Grandi_DesignErgonomicDashboards_2022], most are focused purely on the ergonomics of work actions. That is to say, all commonly used methods developed for analyzing equipment operator video were designed only to identify the operators' exposure to risk factors for physical stress and potential injury [@Greene_VisualizingStressfulAspects_2017]. Another potential application for operator-facing imaging equipment is in fatigue recognition [@Zhang_DevelopmentRescueSystem_2018] and distraction recognition [@Moslemi_ComputerVisionBased_2021], which are also likewise not directly applicable to mowing performance quantification. Without relying on separate sensors, none of these techniques can offer any significant insight into work performance or task completion: key metrics that this study aims to measure for the purposes of informing autonomous vehicle requirements. As a result, operator-facing video capture is not considered an effective tool for this study.
 
-### Operator-Facing Video Capture
-[This section will describe the typical uses of cameras pointed into the tractor cabin. It will outline the kinds of information that can be gleaned from these recordings and explain why they are not as useful for the thesis put forth above.]
+### Implement-Facing Video Capture {#sec:mow_video}
+A different use of video recording technology is to take images of the surrounding environment or work being performed by the machine. Several adaptations of this technology exist in the agricultural space; a prominent example is the camera-guided herbicide sprayer, which can autonomously target weed species [@Moeller_ComputerVisionVersatile_2010], provide row alignment assistance [@Maheshwary_LowCostEmbedded_2023], and quantify movement through crop fields [@Stanhope_ApplicationsLowCost_2016]. Several other applications for implement-facing imaging equipment have been developed as well, including implement and activity recognition [@ANQilin_LightweightRepvitBased_2025] and coverage deployment rate [@Luo_DevelopmentApplicationRemote_2022].
 
-### Implement-Facing Video Capture
-[This section will describe the typical uses of cameras pointed out of the tractor cabin. It will outline the kinds of information that can be gleaned from these recordings and explain why they would be useful for the thesis put forth above.]
+As the previous paragraph notes, implement-facing video capture is well-suited to measuring the performance characteristics of agricultural operations. When properly configured, it should be possible for an imaging system to measure movement along the roadside, quantify obstacle encounters, and recognize activity patterns in recorded operations. These kinds of metrics are what are necessary to understand current roadside mowing operations and informing the requirements for future technologies to match contemporary human performance.
 
-### Long-Term Reliability in Rugged Environments
-[This section will explain the environmental and operational constraints that inform camera selection. It will describe why research-grade equipment is not rugged enough to be reliable in the field over long periods. It will also contrast the typical use-case of dash-cameras with those used in a long-term study such as this one.]
+### Long-Term Reliability in Rugged Environments {#sec:rugged_video}
+The cabin of a tractor used for roadside mowing operations is a very rugged environment. The work is performed regularly throughout the spring, summer, and fall seasons, in a wide array of weather conditions. Temperatures can swing widely, sun exposure can be extreme, and high levels of humidity, moisture, and (especially) dust are very common in the atmosphere. Vibrations are often significant if not severe, and monitoring equipment may even need to withstand ballistic exposure to mower-launched debris *(aside: see @Fig:shatter)*. As a result, lab-grade equipment is completely inappropriate for instrumenting activities in this environment, even though research-oriented instruments would bring a convenient level of configurability. Two other categories of video recording equipment were considered for this project: automotive dash cameras and extreme-sports action cameras.
+
+Automotive dash cameras meet most of the appropriate robust construction requirements, as automobiles can face extreme temperature variations and such cameras are expected to survive (if not necessarily fully intact) most accidents or collisions for evidence collection purposes. However, consumer dash cameras lack the environmental sealing necessary for roadside mowing, as they are designed to stay within the much better-sealed cabin of on-road vehicles. Additionally, they tend to be designed only for continuous recording at high framerate, overwriting old data whenever they run out of storage, as the primary purpose is to document unexpected events; manual data retrieval is expected to occur immediately thereafter. That is not acceptable for a long-term monitoring system as needed for this project, as data from all periods during the study is equally important.
+
+While action-sports cameras are not designed to be wired directly into a vehicle's electrical system like dash cameras, they are designed to withstand the extreme conditions of motorsports, nature exploration, and other highly rugged environments. In addition, as they are general-purpose photography and videography devices, they are capable to being configured with various different settings that are unavailable on dash cameras, such as timelapses, and they can even be set to automatically begin recording in response to certain stimuli. Due to the aforementioned advantages, action-sports cameras were found to be the most appropriate class of equipment for video monitoring of roadside mowing operations.
+
+## Visual Odometry {#sec:visual_odo}
+The purpose of this section is to provide a brief literature review on the topic of visual odometry, a computer vision task. A survey of modern techniques is providede in @Sec:vo_lit, and the novel challenges faced in attempting to perform visual odometry on data from this project are explained in @Sec:vo_mow.
+
+### Common Visual Odometry Methods {#sec:vo_lit}
+[This section will describe existing state-of-the-art in visual odometry techniques. It will primarily cover the powers and capabilities of monocular video, but some explanations will be offered for the lack of stereo cameras and similar inputs in this project.]
+
+### Visual Odometry for Roadside Mowing {#sec:vo_mow}
+[This section will explain how the visual odometry challenges posed by this project are novel and noteworthy, and provide background for the architectural choices explained in the sections below.]
 
 
 \clearpage
 # Methods
-[This chapter will clearly describe the appropriate research methods and tools developed and used for this study.]
+The purpose of this chapter is to clearly describe the appropriate research methods and tools developed and used for this study. The equipment, environment, and basic logistics of the mowing operations monitored are explained in @Sec:methods_mow. The equipment and recording procedures for the telematics collected from monitored tractors are explained in @Sec:methods_iso. The camera and the process of developing the proper settings and configuration for visual activity recordings are explained in @Sec:methods_camera. The processes used to validate the camera's reliability are explained in @Sec:methods_val, and the method of analyzing recorded videos is explained in @Sec:methods_video. The process of attempting to develop a visual odometry system for use on the datasets collected in this project is documented in @Sec:methods_vo.
 
-## Mowing Operations
+## Mowing Operations {#sec:methods_mow}
 The first studied mowing season lasted from May 2023 through October 2023. Initial prototypes of data collection systems were tested in the months leading up to the start of the season, and collection procedures were further developed in multiple iterations throughout the year. The second studied mowing season lasted from May 2024 through October 2024. Data collection systems and procedures were based on a refinement of those from the previous year. All mowing operations were performed by INDOT contractors with privately owned equipment, as shown in @Fig:mower.
 
 ![An INDOT contractor's tractor and towed mower.](img/mower.png){#fig:mower width=4in}
 
-The tractors used consisted of Maxxum 115 and 125 tractors (Case IH, Racine, WI). Towed mowers were all various models of flex-wing rotary cutters 15 feet in width (Brush Hog, Selma, AL). Up to four tractors were monitored at a time in 2023, and up to three were monitored at a time in 2024.
+The tractors used consisted of Maxxum 115 and 125 tractors (Case IH, Racine, WI). Towed mowers were all various models of flex-wing rotary cutters, 15 feet (~4.5 m) in width (Brush Hog, Selma, AL). Up to four tractors were monitored at a time in 2023, and up to three were monitored at a time in 2024.
 
 Operations were performed on roadways across many parts of the state of Indiana, including a range of different terrain conditions, varying from flat plains in the north and center of the state to more rugged hills in the south.
 
@@ -137,7 +166,7 @@ The final firmware configurations mostly revolved around two major changes: remo
 
 Cameras were deployed at the start of the mowing season and memory cards were periodically rotated during operational periods. Remote tracking was not available in 2023, so monitored tractors were located each time by word-of-mouth from the mowing foreman. As this was found to be unreliable and difficult to organize, real-time GPS trackers were added for the 2024 season (see @Fig:int24) to simplify the logistics of maintenance.
 
-## Validation Process
+## Validation Process {#sec:methods_val}
 ### Manual Reliability Testing
 Cameras were manually tested in several conditions in order to verify the reliability of system reboots, GPS positioning, and time synchronization under different system configurations. These tests were performed in order to quickly evaluate the different configurations without deploying them in the field, where longer time periods were necessary to wait for results and non-functional configurations would result in missing potential data.
 
@@ -153,7 +182,7 @@ Camera configurations were also evaluated using a robotic test rig. The automate
 The requirements for the rig were determined experimentally. The minimum radius was found by moving a camera in successively wider circles until it would reliably measure movement via GPS, and the final design was given a slightly longer boom than that for additional tolerance. 
 
 #### Test Rig Design
-The design of the robotic test rig is shown in @Fig:test. The motor used was rated for 250 Watts of continuous power, model number DRVASMB7120037 (Pride Mobility, Exeter, PA). The boom was made from aluminum square tubing, providing a movement radius of 2 meters. The system was controlled by an ESP32 microcontroller, with firmware provided in [CITATION].
+The design of the robotic test rig is shown in @Fig:test. The motor used was rated for 250 Watts of continuous power, model number DRVASMB7120037 (Pride Mobility, Exeter, PA). The boom was made from aluminum square tubing, providing a movement radius of 2 meters. The system was controlled by an ESP32 microcontroller, with firmware provided in Appendix @sec:micropython.
 
 The initial design used a caster wheel to support the long arm, in order to prevent the weight of the boom and attached camera from applying too much lateral strain to the motor shaft. However, as the system was used in outdoor conditions (to most accurately simulate realistic mowing, and allow unobstructed GPS reception), uneven terrain under the wheel would cause the system to vibrate too violently when moving at full speed. The final version of the machine ended up using a counterweight at the opposite end of the arm, to allow the boom to spin freely in midair without need for support under the long arm. A photograph of the machine is shown in @Fig:test.
 
@@ -192,6 +221,11 @@ The instance segmentation results were post-processed to determine the mower's p
 A complementary classification model was used to predict relevant labels directly from input images, without requiring instance segmentation. This model takes an image as input and will output labels indicating the mower's position relative to the shoulder or road, wing orientation, operation mode (normal mow, transit, maneuver), and obstacle type (if applicable). Initially, a binary classification approach was considered to classify the mower as "on" or "off" the road/shoulder. However, due to instances where the mower's position was ambiguous, this approach was not feasible. Instead, the model was trained to output a continuous value representing the distance of the mower from the edge of the road or shoulder, with positive values indicating on-road/shoulder position and negative values denoting off-road/shoulder position.
 
 A specialized annotation tool [@Sprague_ProgramAnnotateVideos_2024] was used to integrate results from both the instance segementation and the classification model, streamlining the annotation and manual verification process. The tool enabled automated video analysis, fast-forwarding to potential maneuver events detected by the classification model. Users could then review and edit specific details of each event, facilitating efficient annotation approximately four times faster than fully manual methods.
+
+## Visual Odometry {#sec:methods_vo}
+A novel program for visual odometry was developed for this project, building on models found in the literature [@Pandey_LeveragingDeepLearning_2021], [@Ye_PVOPanopticVisual_2023]. The program's general architecture is shown in @Fig:vo_arch. Pre-trained models [@Long_FullyConvolutionalNetworks_2015], [@Teed_RAFTRecurrentAll_2020] were used for certain portions in order to avoid redundant training. After XXXXX epochs, the pre-trained models were unfrozen and the model was fine-tuned with end-to-end learning for an additional YYYYYY epochs, with the ADAM optimizer [@Reddi_ConvergenceAdam_2018] set to a reduced learning rate. All code developed for this project is open-source and available online [CITATION].
+
+![Architecture of the visual odometry model. Images from the monocular camera are input from the left and flow through the deep neural network to produce the final result at the right end.](img/blank.png){#fig:vo_arch height=2in}
 
 
 \clearpage
@@ -299,6 +333,13 @@ After the many issues with power failures and GPS metadata in the 2023 mowing se
 
 The movements in which the camera was late to record, or failed to record at all, were due to the camera failing to obtain a GPS signal and positively detect its movement. However, as shown in the movements which started recording late, the camera configuration was still flexible enough to start recording as soon as a good enough signal could be obtained, even if it was not directly correlated with the keyed power input. This adds some robustness to the system for long-term deployments in places that may have intermittent GPS signal, such as along roads with tunnels, steep cliffs, or heavy foliage overhead.
 
+## Visual Odometry
+On simplified training data, the model was trained to estimate the camera's speed relative to its surroundings with XXXXX accuracy, as shown in @Fig:vo_sample. However, when applied to the timelapse videos captured as discussed in @Sec:methods_camera, the model had only YYYYY accuracy, as shown in @Fig:vo_timelapse.
+
+![Results of training on simplified testing dataset.](img/blank.png){#fig:vo_sample height=2in}
+
+![Results of training on timelapse dataset.](img/blank.png){#fig:vo_timelapse height=2in}
+
 
 \clearpage
 # Conclusion
@@ -319,3 +360,50 @@ The movements in which the camera was late to record, or failed to record at all
 
 \clearpage
 # References
+<div id="refs"></div>
+
+\clearpage \appendix
+# Appendix
+## Test Rig Firmware {#sec:micropython}
+```python
+# MicroPython 2024-10-21
+# TJ Wiegman // Purdue University ABE
+
+from machine import Pin, Timer
+import machine, time
+
+# Hardware Definitions
+motorPin = machine.PWM(Pin(2), freq=333) # D2 has own LED, visualizes PWM
+cameraPin = Pin(25, Pin.OUT, value=0) # Value: 0=on, 1=off
+
+def motor_on(x):    
+    # Turn on motor and camera
+    motorPin.duty(562)
+    cameraPin.value(0)
+
+    # Turn off after 10 minutes
+    schedule_timer.init(
+        period = 1000*60*10,
+        mode = Timer.ONE_SHOT,
+        callback = motor_off
+    )
+
+def motor_off(x):
+    # Turn off motor and camera
+    motorPin.duty(512)
+    cameraPin.value(1)
+
+    # Turn back on after 5 minutes
+    schedule_timer.init(
+        period = 1000*60*5,
+        mode = Timer.ONE_SHOT,
+        callback = motor_on
+    )
+
+schedule_timer = Timer(0)
+schedule_timer.init(
+    period = 1000*20, # turn on after 20s
+    mode = Timer.ONE_SHOT,
+    callback = motor_on
+)
+```
