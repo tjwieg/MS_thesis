@@ -19,6 +19,8 @@ header-includes:
 include-before:
   - '`\newpage{}`{=latex}'
 calendarlink: https://www.purdue.edu/academics/ogsps/about/calendar/index.html
+abstract: |
+  Roadside vegetation control is an important part of modern infrastructure maintenance. Little data has been published to characterize the modern roadside mowing environment, identify challenges encountered by mowers, or quantify mower behaviors and responses to encountered conditions. A better understanding of these factors, and more sophisticated tools with which to analyze them, may allow improving the efficiency, safety, and sustainability of the process. In this document, it is shown that programmable action-sports cameras and standard agricultural telematics loggers can be used to record useful data about roadside mowing operations for understanding current operations and informing future developments, and several computer vision models are shown to effectively extract quantitative results from data gathered with the demonstrated equipment.
 ---
 
 \doublespacing \linenumbers
@@ -192,7 +194,7 @@ In order to allow rapid iteration on the camera configurations, replicable and q
 The requirements for the system were determined experimentally. The minimum radius was found by moving a camera in successively wider circles until it would reliably measure movement via GPS, and the final design was given a slightly longer boom than that for additional tolerance. 
 
 #### Design of Automated Test System
-The design of the robotic testing system is shown in @Fig:test. The motor used was rated for 250 Watts of continuous power, model number DRVASMB7120037 (Pride Mobility, Exeter, PA). The boom was made from aluminum square tubing, providing a movement radius of 2 meters so that the attached camera could reliably measure movement via GPS. The system was controlled by an ESP32 microcontroller, with firmware provided in the appendix of this document and online [@Wiegman_MsThesisRepo_2025].
+The design of the robotic testing system is shown in @Fig:test. The motor used was rated for 250 Watts of continuous power, model number DRVASMB7120037 (Pride Mobility, Exeter, PA). The boom was made from aluminum square tubing, providing a movement radius of 2 meters so that the attached camera could reliably measure movement via GPS. The system was controlled by an ESP32 microcontroller, with firmware provided online [@Wiegman_MsThesisRepo_2025].
 
 The initial design used a caster wheel to support the long arm, in order to prevent the weight of the boom and attached camera from applying too much lateral strain to the motor shaft. However, as the system was used in outdoor conditions (to most accurately simulate realistic mowing, and allow unobstructed GPS reception), uneven terrain under the wheel would cause the system to vibrate too violently when moving at full speed. The final version of the machine ended up using a counterweight at the opposite end of the arm, to allow the boom to spin freely in midair without need for support under the long arm. A photograph of the machine is shown in @Fig:test.
 
@@ -230,7 +232,7 @@ The instance segmentation results were post-processed to determine the mower's p
 ### Classification Model
 A complementary classification model was used to predict relevant labels directly from input images, without requiring instance segmentation. This model takes an image as input and will output labels indicating the mower's position relative to the shoulder or road, wing orientation, operation mode (normal mow, transit, maneuver), and obstacle type (if applicable). Initially, a binary classification approach was considered to classify the mower as "on" or "off" the road/shoulder. However, due to instances where the mower's position was ambiguous, this approach was not feasible. Instead, the model was trained to output a continuous value representing the distance of the mower from the edge of the road or shoulder, with positive values indicating on-road/shoulder position and negative values denoting off-road/shoulder position.
 
-A specialized annotation tool [@Sprague_ProgramAnnotateVideos_2024] was used to integrate results from both the instance segementation and the classification model, streamlining the annotation and manual verification process. The tool enabled automated video analysis, fast-forwarding to potential maneuver events detected by the classification model. Users could then review and edit specific details of each event, facilitating efficient annotation approximately four times faster than fully manual methods [@Mardikes_FutureRoadsideMowing_2025].
+A specialized annotation tool [@Sprague_ProgramAnnotateVideos_2024] was used to integrate results from both the instance segmentation and the classification model, streamlining the annotation and manual verification process. The tool enabled automated video analysis, fast-forwarding to potential maneuver events detected by the classification model. Users could then review and edit specific details of each event, facilitating efficient annotation approximately four times faster than fully manual methods [@Mardikes_FutureRoadsideMowing_2025].
 
 ## Visual Odometry {#sec:methods_vo}
 One significant expansion to the dataset would be a way to estimate the speed and distance traveled during a given timelapse recording. In the ideal case, the speed received from the GPS of the telematics system would be accurate, but no RTK corrections were available in this study. As a result, the speed values obtained as explained in @Sec:methods_iso are only rough estimates, and integrating them to find the total distance only compounds any associated errors and noise as the duration increases. Beyond that, as there may not be perfect overlap in uptime between the camera system and the other data collection modalities, metadata from ISOBUS is not guaranteed to be available for each and every timelapse recording. One possible way to get more accurate speed and distance estimates for the recorded timelapses would be to try extracting the information from the images themselves, a computer vision task called visual odometry (see @Sec:vo_lit).
@@ -370,50 +372,3 @@ The results of the analysis of collected data, as shown particularly in @Sec:obs
 
 \clearpage
 # References
-<div id="refs"></div>
-
-\clearpage \appendix
-# Appendix
-## Automated Test System Firmware {#sec:micropython}
-```python
-# MicroPython for ESP32
-# TJ Wiegman // Purdue University ABE
-
-from machine import Pin, Timer
-import machine, time
-
-# Hardware Definitions
-motorPin = machine.PWM(Pin(2), freq=333) # D2 has own LED, visualizes PWM
-cameraPin = Pin(25, Pin.OUT, value=0) # Value: 0=on, 1=off
-
-def motor_on(x):    
-    # Turn on motor and camera
-    motorPin.duty(562)
-    cameraPin.value(0)
-
-    # Turn off after 10 minutes
-    schedule_timer.init(
-        period = 1000*60*10,
-        mode = Timer.ONE_SHOT,
-        callback = motor_off
-    )
-
-def motor_off(x):
-    # Turn off motor and camera
-    motorPin.duty(512)
-    cameraPin.value(1)
-
-    # Turn back on after 5 minutes
-    schedule_timer.init(
-        period = 1000*60*5,
-        mode = Timer.ONE_SHOT,
-        callback = motor_on
-    )
-
-schedule_timer = Timer(0)
-schedule_timer.init(
-    period = 1000*20, # turn on after 20s
-    mode = Timer.ONE_SHOT,
-    callback = motor_on
-)
-```

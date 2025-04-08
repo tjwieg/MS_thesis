@@ -1,0 +1,150 @@
+\ProvidesFile{ch-front.tex}[2024-09-12 front matter chapter]
+%
+%  This is the ``front matter'' for the thesis.
+%
+%  REFERENCES
+%
+%    TCMOS17
+%      The Chicago Manual of Style Online, 17th edition.
+%      https://www.chicagomanualofstyle.org/home.html
+%      retrieved on 2020-02-29
+%
+%    TEMPL
+%      Thesis and Disertation Office Templates.
+%      https://www.purdue.edu/gradschool/research/thesis/templates.html
+%      retrieved on 2020-02-29
+%
+%    WNNCD
+%    Webster's Ninth New Collegiate Dictionary.
+%
+
+%
+%   Only Purdue University uses this page
+%
+%   Comment out \begin{statement} through \end{statement}
+%   if you are not at Purdue University.
+%
+% Statement of Thesis/Dissertation Approval Page
+% This page is REQUIRED.  The page should be numbered "2"
+% and should NOT be listed in your TABLE OF CONTENTS.
+\begin{statement}
+  % Delete or add \entry commands as needed for all committe members.
+  \entry{Dr.~John Evans}{Department of Agricultural and Biological Engineering}
+  \entry{Dr.~Greg Shaver}{Department of Mechanical Engineering}
+  \entry{Dr.~John Lumkes}{Department of Agricultural and Biological Engineering}
+  % There should be one \approvedby command containing the
+  % "FORM 9 THESIS FORM HEAD NAME HERE" (from TEMPL, retrieved on 2020-03-01).
+  \approvedby{Dr.~John Evans}
+\end{statement}
+
+% Dedication page is optional.
+% A name and often a message in tribute to a person or cause.
+% References: WEB9 332.
+% \begin{dedication}
+%   To graduate students
+% \end{dedication}
+
+% Acknowledgements page is optional but most theses include
+% a brief statement of appreciation or recognition of special
+% assistance.
+\begin{acknowledgments}
+  The author thanks the Indiana Department of Transportation (INDOT) and their contractors for their gracious cooperation with this project.
+
+  Nathan Sprague provided invaluable assistance through his development of several computer vision tools and models, as well as a heroic amount of manual data annotation.
+  
+  Formatting of this document is due in part to Purdue University's Engineering Computer Network (now part of Purdue IT) and Graduate School, which helped fund \PurdueThesisLogo\ development.
+\end{acknowledgments}
+
+% The preface is optional.
+% References: TCMOS17 1.49, WEB9 927.
+% \begin{preface}
+%   This is the preface.
+% \end{preface}
+
+% The Table of Contents is required.
+% The Table of Contents will be automatically created for you
+% using information you supply in
+%     \chapter
+%     \section
+%     \subsection
+%     \subsubsection
+%     commands.
+\pdfbookmark{TABLE OF CONTENTS}{Contents}
+\tableofcontents
+
+% If your thesis has tables, a list of tables is required.
+% The List of Tables will be automatically created for you using
+% information you supply in
+%     \begin{table} ... \end{table}
+% environments.
+\listoftables
+
+% If your thesis has figures, a list of figures is required.
+% The List of Figures will be automatically created for you using
+% information you supply in
+%     \begin{figure} ... \end{figure}
+% environments.
+\listoffigures
+
+% If your thesis has listings, a list of listings is required.
+% The List of Listings will be automatically created for you using
+% information you supply in
+%     \begin{ZZlisting} ... \end{ZZlisting}
+% environments.
+% \ZZlistoflistings
+
+% If your thesis has protocols, you may want to do a list of protocols.
+% The List of Protocols will be automatically created for you using
+% information you supply in
+%     \begin{protocol} ... \end{protocol}
+% environments.
+% \listofprotocols
+
+% If your thesis has schemes, you may want to do a list of schemes.
+% The List of Schemes will be automatically created for you using
+% information you supply in
+%     \begin{scheme} ... \end{scheme}
+% environments.
+% \listofschemes
+
+% List of Symbols is optional.
+% \begin{symbols}
+%   \(m\)& mass\cr
+%   \(v\)& velocity\cr
+% \end{symbols}
+
+% List of Abbreviations is optional.
+\begin{abbreviations}
+  CAN & Controller Area Network\cr
+  CASMOBOT & Computer Assisted Slope Mower Robot\cr
+  CNN & Convolutional Neural Network\cr
+  GNSS & Global Navigation Satellite System\cr
+  GPS & Global Positioning System\cr
+  GRU & Gated Recurrent Unit\cr
+  INDOT & Indiana Department of Transportation\cr
+  LSTM & Long Short Term Memory\cr
+  PGN & Parameter Group Number\cr
+  PTO & Power Take-off\cr
+  RTC & Real-Time Clock\cr
+  RTK & Real-Time Kinematic\cr
+  SFM & Structure from Motion\cr
+  SLAM & Simultaneous Localization and Mapping\cr
+  TCN & Temporal Convolutional Network\cr
+  VO & Visual Odometry\cr
+
+\end{abbreviations}
+
+% Abstract is required.
+% Reference:
+%       author    = {Thesis and Dissertation Office},
+%       pages     = {9},
+%       publisher = {Purdue University},
+%       url       = {https://www.purdue.edu/gradschool/research/thesis/templates.html},
+%       urldate   = {2022-10-24},
+% Choose:
+%     Microsoft Word
+%     West Lafayette
+%     College of Engineering
+\begin{abstract}
+  Roadside vegetation control is an important part of modern infrastructure maintenance. Little data has been published to characterize the modern roadside mowing environment, identify challenges encountered by mowers, or quantify mower behaviors and responses to encountered conditions. A better understanding of these factors, and more sophisticated tools with which to analyze them, may allow improving the efficiency, safety, and sustainability of the process. In this document, it is shown that programmable action-sports cameras and standard agricultural telematics loggers can be used to record useful data about roadside mowing operations for understanding current operations and informing future developments, and several computer vision models are shown to effectively extract quantitative results from data gathered with the demonstrated equipment.
+\end{abstract}
