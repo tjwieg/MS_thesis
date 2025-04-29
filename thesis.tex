@@ -1,927 +1,171 @@
-\ProvidesFile{thesis.tex}[2025-01-15 PurdueThesis thesis.tex file]
-
-%  The home page for the PurdueThesis software is
-%      https://engineering.purdue.edu/~mark/PurdueThesis/
-%
-%  Be sure to sign up for the PurdueThesis mailing list at
-%      https://engineering.purdue.edu/ECN/mailman/listinfo/purduethesis-list
-%  so you learn of new versions of this software.  You must be on that
-%  mailing list to receive help with this software.
-%
-%  This is the template root file for an example thesis (for master's
-%  degree) or dissertation (for a Ph.D.).  From now on "thesis" will
-%  refer to both of these unless stated otherwise.
-%
-%  LaTeX systems include auxiliary programs to do bibliographies,
-%  indexes, etc.  The latexmk program runs the fewest programs needed
-%  to update your thesis.
-%
-%  On Overleaf (run LaTeX on the web) clicking 'Recompile' will recompile
-%  your thesis.
-%
-%  Use this command on Linux to do all the steps needed to compile your thesis.
-%    For Mark Senn:
-%      Use
-%          latexmk -e '$biber="biber --output-safechars"' -f -g -lualatex --shell-escape thesis
-%      to get extra debugging information printed.  Sometimes the `-f -g' can 
-%      be deleted to run faster.
-%    For everyone else:
-%      Use
-%          latexmk -e '$biber="biber --output-safechars"' -f -g -lualatex thesis
-%      Sometimes the `-f -g' can be deleted to run faster.
-%  Here is how that command works:
-%      latexmk
-%          The latexmk program figures out how to compile
-%          your thesis in the quickest way.
-%      -e '$biber="biber --output-safechars"'
-%          Add the '--output-safechars' option to biber,
-%          the command that makes your references.  This
-%          command makes accented characters in your references
-%          work ok.
-%      -f
-%          Force latexmk to process your entire thesis, even
-%          if it contains errors.
-%      -g
-%          Force latexmk to process document fully, even under situations
-%          where latexmk would normally decide that no changes in the
-%          source files have occurred since the previous run.  This  option
-%          is  useful, for example, if you change some options and wish to
-%          reprocess the files.
-%      -lualatex
-%          The -lualatex option process your thesis using the LuaLaTeX
-%          version of LaTeX.  LuaLaTeX has the Lua programmng language
-%          added to make programming LaTeX easier.  You won't need to
-%          learn Lua or do any LaTeX programming for your thesis.
-%      --shell-escape
-%          The --shell-escape option allows you to run external programs
-%          from inside your thesis.
-%      thesis
-%          Process your thesis.tex file.
-%
-%
-%  NOTE TO SELF
-%      To count the number of references see
-%          https://tex.stackexchange.com/questions/66829/count-number-of-references-using-biblate
-%      See set the \labelnumberwidth see page 316 of
-%          https://ctan.math.illinois.edu/macros/latex/contrib/biblatex/doc/biblatex.pdf
-%      
-%
-%  PROGRAM                                       BIBLIOGRAPHY    PurdueThesis.cls    thesis.tex   WORKS
-%                                                STYLE           RCS rev             RCS rev
-%  Mathematics                                   apa             1.249               1.58         yes
-%  Mathematics                                   ieee            1.250               1.59         yes
-%  Electrical and Computer Engineering           ieee            1.250               1.60         yes
-%  Earth, Atmospheric, and Planetary Sciences    apa             1.251               1.61         yes
-%  Mathematics                                   apa             1.252               1.62         yes
-%  Technology Leadership and Innovation          apa             1.253               1.63         yes
-%  Mathematics                                   numeric         ????                ????         ????
-%  Earth, Atmospheric, and Planetary Sciences    apa             ????                ????         ????
-%
-
-%
-%  References cited below:
-%
-%  TM2017 is short for Thesis Manual 2017:
-%    A Manual for the Preparation of Graduate Theses,
-%    eighth revised edition,
-%    Thesis and Dissertation Office,
-%    Purdue University,
-%    2017,
-%    revised August 30, 2017,
-%    http://www.purdue.edu/gradschool/documents/thesis/graduate-thesis-manual.pdf,
-%    last retrieved on May, 8, 2021.
-%
-%  In this file, change the example information to your information.
-%
-
-
-% author
-% Put your name here.
-\newcommand{\ZZauthor}{Timothy J. Wiegman}
-
-
-% campus
-% Choose a campus from the following list:
-%     VALUE               COMMENT
-%     Bloomington
-%     Fort Wayne
-%     Hammond
-%     Indianapolis
-%     Manoa               don't include the macron character here,
-%                         it will get printed automatically
-%     Reno
-%     Westville
-%     West Lafayette
-\newcommand{\ZZcampus}{West Lafayette}
-% \newcommand{\ZZcampus}{Fort Wayne}
-
-
-% degree
-% If you are in `Motorsports Engineering'
-% use `Master of Science in Mechanical Engineering'.
-% Choose a degree from the following list:
-%     Doctor of Audiology
-%     Doctor of Nursing Practice
-%     Doctor of Philosophy
-%     Doctor of Technology
-%     Master of Arts
-%     Master of Fine Arts
-%     Master of Library Science
-%     Master of Science
-%     Master of Science in Agriculture
-%     Master of Science in Aviation and Aerospace Management
-%     Master of Science in Aeronautics and Astronautics
-%     Master of Science in Agricultural and Biological Engineering
-%     Master of Science in Building Construction Management
-%     Master of Science in Biomedical Engineering
-%     Master of Science in Chemical Engineering
-%     Master of Science in Civil Engineering
-%     Master of Science in Education
-%     Master of Science in Electrical and Computer Engineering
-%     Master of Science in Engineering
-%     Master of Science in Engineering Technology
-%     Master of Science in Human Resources Management
-%     Master of Science in Industrial Engineering
-%     Master of Science in Industrial Technology
-%     Master of Science in Mechanical Engineering
-%     Master of Science in Materials Engineering
-%     Master of Science in Nuclear Engineering
-\newcommand{\ZZdegree}{Master of Science in Agricultural and Biological Engineering}
-% \newcommand{\ZZdegree}{Master of Science}
-
-
-% document
-% Choose a document from the following list:
-%     A Dissertation
-%     A Master's Bypass Report
-%     A Preliminary Report
-%     A Thesis
-% \newcommand{\ZZdocument}{A Dissertation}
-\newcommand{\ZZdocument}{A Thesis}
-
-% graduation
-% Chose a month from
-%     May
-%     August
-%     December
-% followed by a space
-% then choose a year from 2020 to 2030.
-\newcommand{\ZZgraduation}{May 2025}
-
-
-% institution
-% Choose an institution name from the following list:
-%     VALUE                   COMMENT
-%     Purdue University
-%     University of Hawaii    don't include the 'okina character here,
-%                             it will get printed automatically
-\newcommand{\ZZinstitution}{Purdue University}
-
-
-% program
-% Choose a program from the following list:
-% If you are in `Motorsports Engineering' use `Mechanical Engineering'.
-%     VALUE
-%     Aeronautics and Astronautics
-%     Agricultural and Biological Engineering
-%     Agricultural Economics
-%     Agronomy
-%     American Studies
-%     Animal Sciences
-%     Anthropology
-%     Applied Physics
-%     Art and Design
-%     Aviation and Transportation Technology
-%     Basic Medical Sciences
-%     Biochemistry
-%     Biological Sciences
-%     Biology
-%     Biomedical Engineering
-%     Botany and Plant Pathology
-%     Chemical Engineering
-%     Chemistry
-%     Chemistry and Chemical Biology
-%     Child Development and Family Studies
-%     Civil and Construction Engineering
-%     Civil and Mechanical Engineering
-%     Communication
-%     Communications
-%     Comparitive Pathobiology
-%     Computer and Information Science
-%     Computer and Information Technology
-%     Computer Graphics Technology
-%     Computer Science
-%     Construction Management Technology
-%     Consumer Science
-%     Curriculum and Instruction
-%     Earth, Atmospheric, and Planetary Sciences
-%     Economics
-%     Educational Studies
-%     Electrical and Computer Engineering
-%     Engineering Education
-%     Engineering Technology
-%     English
-%     Entomology
-%     Food Science
-%     Forensic and Investigative Sciences
-%     Forestry and Natural Resources
-%     Health and Kinesiology
-%     Health Sciences
-%     History
-%     History and Philosophy
-%     Horticulture
-%     Hospitality and Tourism Management
-%     Human Development and Family Studies
-%     Industrial and Physical Pharmacy
-%     Industrial Engineering
-%     Interdisciplinary Biomedical Studies Program
-%     Interdisciplinary Studies (Comparitive Literature)
-%     Languages and Cultures
-%     Linguistics
-%     Management
-%     Materials Engineering
-%     Mathematical Sciences
-%     Mathematics
-%     Mechanical and Energy Engineering
-%     Mechanical Engineering
-%     Mechnical and Civil Engineering
-%     Medicinal Chemistry and Molecular Pharmacology
-%     Nuclear Engineering
-%     Nursing
-%     Nutrition Science
-%     Organizational Behavior and Human Resource Management
-%     Pharmacy Practice
-%     Philosophy
-%     Philosophy and Literature
-%     Physics
-%     Physics and Astronomy
-%     Political Science
-%     Psychological Sciences
-%     Sociology
-%     Speech, Language, and Hearing Sciences
-%     Statistics
-%     Technology
-%     Technology Leadership and Innovation
-%     Theatre
-%     Veterinary Clinical Sciences
-%     Youth Development and Agricultural Education
-\newcommand{\ZZprogram}{Agricultural and Biological Engineering}
-% \newcommand{\ZZprogram}{Applied Physics}
-
-
-% title
-% If you need to manually split the title,
-% over several lines do, for example,
-%     \newcommand{\ZZtitle}{%
-%       This is the First Line\\[-6pt]
-%       and this is the Second Line%
-%     }
-\newcommand{\ZZtitle}{Computer Vision Analysis \& Monitoring of Vegetation Control
-Operations on Indiana Roadsides}
-
-
-% showcolophon
-% Print the ap-colophon.tex file at the end of the document?
-% THE SUBMITTED COPY OF YOUR THESIS MUST BE RUN WITH ZZshowcolophon SET TO false.
-\newcommand{\ZZshowcolophon}{false}
-
-% showdiagonalline
-% Show a diagonal line from lower left to center
-% of main printed part of page?
-% THE SUBMITTED COPY OF YOUR THESIS MUST BE RUN WITH ZZshowdiagonalline SET TO false.
-\newcommand{\ZZshowdiagonalline}{false}
-
-% showgridlines
-% Show grid lines on main printed part of page
-% Vertical and horizontal grid lines are put
-% in the normal printed part of the page---this
-% includes lines where the margins are.
-% THE SUBMITTED COPY OF YOUR THESIS MUST BE RUN WITH ZZshowgridlines SET TO false.
-\newcommand{\ZZshowgridlines}{false}
-
-% showmarginlines
-% Show margin lines on the edge of the normal printed part of the page?
-% Margin lines show where the margins are.
-% THE SUBMITTED COPY OF YOUR THESIS MUST BE RUN WITH ZZshowmarginlines SET TO false.
-%     VALUE    MEANING
-%     false    don't show marginlines
-%     true     show marginlines
-\newcommand{\ZZshowmarginlines}{false}
-
-% showtimestamp
-% Show, for example, a "compiled on  2021-03-02  Tuesday  17:16:24"
-% timestamp in the upper right corner of page?
-%     VALUE    MEANING
-%     false    don't show timestamp
-%     true     show timestamp
-% THE SUBMITTED COPY OF YOUR THESIS MUST BE RUN WITH ZZshowtimestamp SET TO false.
-\newcommand{\ZZshowtimestamp}{false}
-
-% showtodonotes
-% Set things up for todonotes.
-%     VALUE    MEANING
-%     false    don't put todo notes in PDF file
-%     true     put 0.8 inch wide todo notes in PDF file
-%     wide     put 3.8 inch wide todo notes in PDF file, do not send
-%              todonotes = wide output to a printer
-% THE SUBMITTED COPY OF YOUR THESIS MUST BE RUN WITH ZZshowtodonotes SET TO false.
-\newcommand{\ZZshowtodonotes}{false}
-
-% Mark Senn uses an "optional-debugging-code.tex file" but does not
-% distribute it.  The following line won't do anything if you don't
-% have an optional-debugging-code.tex file so you can leave it the
-% way it is.
-\InputIfFileExists{optional-debugging-code.tex}{}{}
-
-% The \includeonly command can be used to only include some
-% files that have \include commands below.  This is handy
-% to only include some files so your document will LaTeX
-% faster or if you're trying to narrow down where an error
-% occurs.  You can use
-%   \includeonly{ch-introduction}
-% to only include ch-introduction.tex, or
-%   \includeonly{ch-introduction,ap-about-appendices}
-% to include ch-introduction.tex and ap-about-appendices.tex.
-% More files can be added---just put ',' between the names.
-% Comment out the following line before submitting the
-% final copy of your thesis.
-%\includeonly{ch-introduction,ap-about-appendices}
-
-
-\documentclass{PurdueThesis}
-
-% I'm not using the silence package to not print LaTeX errors
-% and warnings because
-%     \usepackage{silence}
-% caused
-%     [89] [90] [91] (./z.out) (./z.out^C 
-%     ! Interruption.
-%     \sl@StoreMessage ...oveGobbletwo #1\sl@Terminator 
-%                                                       \@gobbletwo \sl@Terminator...
-%     
-%     l.2 \subsection{Sum of 1 to \(n\) example}
-%                                             
-%     ? 
-% where ^C indicates I typed a Control-C because LaTeX was 'stuck'.
-%
-% I do the following when using Overleaf.  Check the icon just to the
-% right of the 'Recompile' button to see how many errors/warnings there
-% are.  If that number goes up I look for the details of what has
-% changed.
-% \usepackage{silence}
-
-%%%% \ExplSyntaxOn                         %%%% changed 2021-07-27 by mark
-%%%% \bool_set_true:N \ZZCenterCaptionB    %%%% changed 2021-07-27 by mark
-%%%% \ExplSyntaxOff                        %%%% changed 2021-07-27 by mark
-
-\newcommand{\ZZatinformation}{}
-% If you are at the Hammond or Westville campus
-% remove the "%" from the begining of the next line.
-%\newcommand\ZZatinformation{~at~Purdue~Northwest}
-
-
-% PurdueThesis.cls loads the rotating package which loads the graphicx
-% package.  From page 12 of "Packages in the `graphics' bundle", 2021-03-05,
-% retrieved 2021-06-16, at https://texdoc.org/serve/grfguide.pdf/0
-%     \graphicspath{<dir-list>}
-%
-%         This optional declaration may be used to specify a list of
-%         directories in which to search for graphics files.  The
-%         format is the same as for the LaTeX 2e primitive \input@path.
-%         A list of directories, each in a {} group (even if there is
-%         only one in the list).  For example:
-%             \graphicspath{{eps/}{tiff/}}
-%         would cause the system to look in the subdirectories eps and
-%         tiff of the current directory.  (All modern TeX systems use /
-%         as the directory separator, even on Windows.)
-%
-%         The default setting of this path is \input@path that is:
-%         graphics files will be found whereever TeX files are found.
-%
-% Look in the "graphics" subfolder for graphics files.
-% This is done to reduce the number of files in the main thesis folder
-% so the ones in there are easier to find.
-\graphicspath{{graphics/}}
-
-% Look in the `misc' subfolder for miscellaneous files
-% PurdueThesis.cls and thesis.tex need.  Look in the `packages'
-% subfolder for packages.  This is done to reduce the number of files
-% in the main thesis folder so the ones in there are easier to find.
-%%%%\ExplSyntaxOn
-%%%%  \seq_set_from_clist:Nn \l_file_search_path_seq {misc,packages}
-%%%%\ExplSyntaxOff
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{3}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
 \makeatletter
-  \def\input@path{{misc}{packages}}
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
 \makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage[]{biblatex}
+\addbibresource{thesis.bib}
+\usepackage{setspace}
+\usepackage[left]{lineno}
+\makeatletter
+\@ifpackageloaded{subfig}{}{\usepackage{subfig}}
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\captionsetup[subfloat]{margin=0.5em}
+\AtBeginDocument{%
+\renewcommand*\figurename{Figure}
+\renewcommand*\tablename{Table}
+}
+\AtBeginDocument{%
+\renewcommand*\listfigurename{List of Figures}
+\renewcommand*\listtablename{List of Tables}
+}
+\newcounter{pandoccrossref@subfigures@footnote@counter}
+\newenvironment{pandoccrossrefsubfigures}{%
+\setcounter{pandoccrossref@subfigures@footnote@counter}{0}
+\begin{figure}\centering%
+\gdef\global@pandoccrossref@subfigures@footnotes{}%
+\DeclareRobustCommand{\footnote}[1]{\footnotemark%
+\stepcounter{pandoccrossref@subfigures@footnote@counter}%
+\ifx\global@pandoccrossref@subfigures@footnotes\empty%
+\gdef\global@pandoccrossref@subfigures@footnotes{{##1}}%
+\else%
+\g@addto@macro\global@pandoccrossref@subfigures@footnotes{, {##1}}%
+\fi}}%
+{\end{figure}%
+\addtocounter{footnote}{-\value{pandoccrossref@subfigures@footnote@counter}}
+\@for\f:=\global@pandoccrossref@subfigures@footnotes\do{\stepcounter{footnote}\footnotetext{\f}}%
+\gdef\global@pandoccrossref@subfigures@footnotes{}}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Computer Vision Analysis \& Monitoring of Vegetation Control Operations on Indiana Roadsides},
+  pdfauthor={Timothy J Wiegman ORCID 0000-0002-4341-0857},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
 
-% The BibLaTeX bibstyle and citestyle are chosen automatically based
-% on your program (e.g., `Mathematics').  For example, if you are in
-% the Mathematics program normally you are using the `numeric'
-% bibstyle and citestyle.
-% the `numeric-comp' (numeric compressed---instead of '[1,2,3]' use
-% '[1--3]') citestyle.
-% To override the bibstyle and citestyle to `apa' use
-%     \ZZoverridebibstyle{apa}
-% To override the bibstyle to `apa'and the citestyle to `numeric-comp'
-% use
-%     \ZZoverridebibstyle{apa}
-%     \ZZoverridecitestyle{numeric-comp}
-% Any overrides must go before the \ConfigureBibliography.
-%%%\ZZoverridebibstyle{apa}
-
-\ConfigureBibliography
-
-% \DeclareSourcemap
-%   {
-%     \maps[datatype=bibtex]
-%     {
-%       % Ignore "urldate = {...}" in .bib files.
-%       % See the first complete example on page 201 of
-%       %     https://mirrors.rit.edu/CTAN/macros/latex/contrib/biblatex/doc/biblatex.pdf
-%       \map
-%         {
-%           \step[fieldset=urldate, null]
-%         }
-%       % Enter approximate (circa) dates using, for example,
-%       % "year = c2020"  See
-%       %     https://tex.stackexchange.com/questions/224617/what-is-the-correct-way-to-handle-approximate-dates-in-biblatex
-%       \map[overwrite=false]
-%         {
-%           \step[fieldsource=year]
-%           \step[fieldset=sortyear, origfieldval, final]
-%           \step[fieldsource=sortyear, match={c}, replace={}]
-%         }
-%     }
-%   }
-
-% For \bm.
-% The bm package was last updated on 2022-01-05.
-\usepackage{bm}
-
-% To let {\bfseries\scshape text} work as expected.
-% See
-%     https://tex.stackexchange.com/questions/27411/small-caps-and-bold-face
-\usepackage{bold-extra}
-
-% For chemical figures.
-\usepackage{chemfig}
-
-% For typesetting cryptography pseudocode, algorithms, and protocols.
-% See
-%     https://mirror.las.iastate.edu/tex-archive/macros/latex/contrib/cryptocode/cryptocode.pdf
-\usepackage
-[
-  n,            % or lambda
-  advantage,
-  operators,
-  sets,
-  adversary,
-  landau,
-  probability,
-  notions,
-  logic,
-  ff,
-  mm,
-  primitives,
-  events,
-  complexity,
-  oracles,
-  asymptotics,
-  keys,
-]
-{cryptocode}
-
-% Define
-%    \VerbatimInput[options]{filename}
-%    \begin{VerbatimOut}{filename} ... \end{VerbatimOut}.
-\usepackage{fancyvrb}
-  % So '|verbatim|' will print 'verbatim' in a typewriter font.
-  % If you don't want this, put a '%' before the next line.
-  \DefineShortVerb{\|}
-
-% For \InpuutIfFileExists.
-\usepackage{filehook}
-
-% Use OpenType fonts in LuaLaTeX.
-\usepackage{fontspec}
-
-% For nlui testing.
-\usepackage{listings}
-
-% For chemical equations.
-% See
-%     https://ctan.org/pkg/mhchem?lang=en
-% From the "Package documentation" linked-to document
-%     mhchem needs a couple of other packages.
-%     For instance, expl3, amsmath and calc.
-\usepackage[version=4]{mhchem}
-  % If I'm loading the package to just define a few new commands I'll indent
-  % two spaces right after loading the package and define the few new
-  % commands here.  If I'm defining more than a few commands I usually do it
-  % after loading all the packages.
-  % Define "\nitrate" to be the chemical symbol for nitrate.
-  \newcommand{\nitrate}{\ce{NO3{-}}}
-  % Define "\pnitrate" (short for "parenthesized nitrate") to be the chemical
-  % symbol for nitrate surrounded by parentheses.
-  \newcommand{\pnitrate}{(\nitrate)}
-  % "Define \vpnitrate" (short for "verbose parenthesized nitrate") to be
-  % the word "nitrate" followed by a space followed by the chemical symbol
-  % for nitrate with parentheses around it.
-  \newcommand{\vpnitrate}{nitrate (\nitrate)}
-
-% For
-%     \cancel
-%     \highlight
-% See
-%     http://ftp.math.purdue.edu/mirrors/ctan.org/macros/latex/contrib/siunitx/siunitx.pdf
-% pages 11--12.
-\usepackage{cancel}
-
-
-% Redefine description, enumerate, and itemize lists.
-% See
-%     https://mirrors.concertpass.com/tex-archive/macros/latex/contrib/enumitem/enumitem.pdf
-% \usepackage{enumitem}
-% \setlist[itemize]{leftmargin=7pt,rightmargin=24pt}
-
-
-
-% This gets rid of
-%     [5] (./thesis.toc
-%     ! Undefined control sequence.
-%     \vbox_set:Nn ...box:D {\color_group_begin: #2\par
-%                                                       \color_group_end: }
-%     l.32 ...}Basic Circuit Components}{31}{section.67}
-%                                                       %
-%     ?
-% and
-%     [6]
-%     ! Undefined control sequence.
-%     \vbox_set:Nn ...box:D {\color_group_begin: #2\par
-%                                                       \color_group_end: }
-%     l.61 ...rline {P.1}Frenchspacing}{67}{section.445}
-%                                                       %
-%     ?
-% errors.
-% See
-%     https://github.com/latex3/latex2e/issues/73
-\usepackage{etoc}
-
-% Define \setmaxprintline{number_of_columns}.
-% \usepackage{hardwrap}
-
-% Include XMP data in a PDF document.
-% See
-%   http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/hyperxmp/hyperxmp.pdf
-% for more information including all the possible fields that can be set.
-\usepackage{hyperxmp}
-  \hypersetup{
-    pdfauthor    = {Timothy J Wiegman},
-    pdfcopyright = {Copyright \copyright\ 2025 by Timothy Wiegman.  All rights reserved.},
-    % Use `yyyy-mm' format where `yyyy' is year and `mm' is month.
-    pdfdate      = {2025-05},
-    pdfkeywords  = {LaTeX; Purdue University; PurdueThesis},
-    pdflang      = {en},
-    pdfpublisher = {Purdue University},
-    pdfsubject   = {%
-                     PurdueThesis is a LaTeX document class used for
-                     master's bypass reports,
-                     master's theses,
-                     PhD dissertations,
-                     and PhD preliminary reports.
-                     This template demonstrates how to use PurdueThesis.%
-                   },
-    pdftitle     = {Wiegman-MSABE-Thesis},
-  }
-
-
-% For `\Box'.
-\usepackage{latexsym}
-
-% Used in ap-colophon.tex.
-\usepackage{luacode}
-
-% For indexing.  Making an index is optional.
-% Make these commands available:
-%     COMMAND           DESCRIPTION
-%     \index{string}    put "string" in index information
-%     \makeindex        save information to make the index
-%     \printindex       print the index
-% See
-%     https://ctan.org/pkg/makeidx?lang=en
-% for more information.
-\usepackage{makeidx}
-  % By default \index ignores its argument.
-  % This activates indexing.
-  \makeindex
-  % The "chapter name" for the index.
-  \renewcommand{\indexname}{INDEX}
-
-% The mathtools package
-% (see http://mirror.utexas.edu/ctan/macros/latex/required/amsmath/amsmath.pdf)
-% loads the amsmath package which defines the
-%     align
-%     align*
-%     alignat
-%     alignat*
-%     equation
-%     equation*
-%     flalign
-%     flalign*
-%     gather
-%     gather*
-%     multitaper
-%     multitaper*
-%     split
-% environments and extends amsmath by defining many other commands.
-% See
-%     https://ctan.org/pkg/amsmath
-% for information about amsmath and
-%     http://ctan.math.washington.edu/tex-archive/macros/latex/contrib/mathtools/mathtools.pdf
-% for information about mathtools.
-\usepackage{mathtools}
-
-% Define \includemedia.
-\usepackage{media9}
-
-% Define \begin{multicols}{number_of_columns} ... \end{multicolumns}.
-% Used in ap-text.tex.
-\usepackage{multicol}
-
-% Define \ditto.
-\usepackage{pa-ditto}
-
-% Define \FigureDash.
-% \FigureDash is a dash the width of a digit in the current font.
-\usepackage{pa-figure-dash}
-
-% For PurdueThesis, PuTh, TeX, LaTeX, METAFONT, METAPOST, ... logos.
-\usepackage{pa-logos}
-
-\usepackage{pdfpages}
-
-% Follow ISO 80000-2:2019:
-%   o  The e, i, j, and pi constants should be in an upright font.
-%   o  The ordinary derivative operator d should be in an upright font.
-\usepackage{pa-mismath}
-  % For letter in ('e', 'i', 'j'):
-  %     o  \MathUp{letter} typesets letter in an upright font from now on.
-  %        Use \mathit{letter} to get a math italic letter
-  %        when Mathup{letter} is active.
-  %     o  \MathIt{letter} typesets letter in a math italic font from now on.
-  %        Use \mathup{letter} to get an upright letter
-  %        when MathIt{letter} is active.
-  %
-  % \pinumber typesets pi in an upright font from now on.
-  %  Use \itpi to get a math italic pi when \pinumber is active.
-  %  
-  % \pinormal typesets pi in a math italic font from now on.
-  % Use \text{\pi} to get an upright pi when \pinormal is active.
-  %
-  % Adjust these are needed for your document.
-  \MathUp{e}  \MathUp{i}  \MathUp{j}  \pinumber
-  %
-  % Use \di for ordinary derivative operator.
-  
-% This does not depend on the pa-mismath package.
-% Do more ISO 80000-2:2019 stuff.
-% Follow ISO 80000-2:2019:
-%   o  The partial derivative operator should be in an upright font.
-% The pa-mismath package defines "\di" as the ordinary differential operator.
-% Define "\pa" as the partial derivative operator.
-\def\pa{\rotatebox[origin=c]{14}{\partial}}
-
-% This does not depend on the pa-mismath package.
-% Do more ISO 80000-2:2019 stuff.
-% Follow ISO 80000-2:2019:
-%   o  Use \mathcal{F} for the Fourier transform.
-\def\Fourier{\mathcal{F}}
-
-% This does not depend on the pa-mismath package.
-% Do more ISO 80000-2:2019 stuff.
-% Follow ISO 80000-2:2019:
-%   o  Use \mathcal{L} for the Laplace transform.
-\def\Laplace{\mathcal{L}}
-
-% Define \MyRepeat{what}{repeat}.
-% Do "what" "repeat" number of times.
-\usepackage{pa-repeat}
-
-% Define \FloatBarrier.
-% \FloatBarrier process all unproccesed floats (tables, figures, etc.).
-\usepackage{placeins}
-
-% Define \hl.
-% Undefine \st so soul will load without an error.
-% I hope \st wasn't used for something important!
-\let\st\relax
-\usepackage{soul}
-
-% Define \textcent.
-\usepackage{textcomp}
-
-% !!! This doesn't work yet, figure it out later.
-% For \textprimstress.
-% \usepackage{tipa}
-
-% Needed for chapter "Graphics", section "TikZ and PGF".
-\usepackage{tikz}
-  % Needed to customize arrows.
-  \usetikzlibrary{arrows.meta}
-  % For electrical diagrams.
-  % Uses the TikZ package.
-  % The circuitikz name is short for "circuit TikZ".
-  \usepackage{circuitikz}
-  %
-  \usepackage{menukeys}
-  %
-  % Needed for 3D TikZ stuff.
-  \usetikzlibrary{3d}
-  %
-  % Needed for pa-typographic-conventions package.
-  \usetikzlibrary{calc,shadows,shapes.misc,shapes.symbols}
-  %
-  % Needed for putting text along a path.
-  \usetikzlibrary{decorations.text}
-  %
-  % Draw TikZ decorations.
-  % Needed for at least the Kalman filter system model graphic.
-  \usetikzlibrary{decorations.pathmorphing} % noisy shapes
-  %
-  % Fit shapes to coordinates.
-  % Needed for at least the Kalman filter system model graphic.
-  \usetikzlibrary{fit}
-  %
-  % Draw the background after the foreground.
-  \usetikzlibrary{backgrounds}	% drawing the background after the foreground
-
-% Needed for the Feynman diagram in ap-physics.tex.  Tikz-feynman
-% requires LuaLaTeX instead of pdflatex be run.  LuaLaTeX screws up
-% the horizontal position of the list of figures---this is a known bug.
-% The Thesis Office accepts theses with this problem.
-\usepackage[compat=1.1.0]{tikz-feynman}
-
-% The vertical space between a table heading and the table contents
-% in a tabular environment.
-\newcommand{\tabularspace}{\noalign{\vspace*{2pt}}}
-
-% For \sfrac, used to do slanted fractions, similar to, e.g., 1/2,
-% but 1 is small and high and 2 is small and low.
-\usepackage{xfrac}
-
-
-% Define \I.
-% \I1 does \indent once, \I2 does \indent twice, etc.
-\newcommand{\I}[1]{\MyRepeat{\indent}{#1}}
-
-% Define \MyI.
-% Typeset my input.
-\long\def\MyI#1%
-  {%
-    {%
-      \fontsize{8}{10}\tt
-      \VerbatimInput
-        [
-          firstnumber = 1,
-          numbers     = left,
-          xleftmargin = 0.33in,
-        ]%
-        {#1}
-    }%
-  }
-
-% Define \MyIO.
-% Typeset my input and output.
-% The input will all be on the same page.
-% The output may be split over multiple pages.
-\newcommand{\MyIO}
-  {%
-    % \input{z.out}
-
-    % {%
-    %   \fontsize{8}{10}\tt
-    %   \VerbatimInput
-    %     [
-    %       firstnumber = 1,
-    %       numbers     = left,
-    %       xleftmargin = 0.33in,
-    %     ]
-    %     {z.out}
-    % }
-    % \FloatBarrier
-  }
-
-% Define \NL (newline) so LaTeX goes to the next output line.
-% Just doing \\ complains
-%     ! LaTeX Error: There's no line here to end.
-% \mbox{} is an empty math box.
-\newcommand{\NL}{\mbox{}\\}
-
-% In this document I use in-line tables a lot.
-% These are tables that are put in the document
-% where I want them to appear and they don't
-% use \begin{table} ... \end{table}
-\newenvironment{inlinetable}
-  {%
-    \begingroup
-      \singlespace
-      \mbox{}\\[-9pt]%
-      \noindent
-      \hspace*{2\parindent}%
-      \ignorespaces
-  }
-  {%
-      \mbox{}\\
-    \endgroup
-  }
-
-
-% Print a list of files used and their version numbers in the log file.
-\listfiles
-
-
-% \def\bibindent{0em}
-% Customize the bibliography.
-% \DefineBibliographyStrings{english}{
-%   urlfrom = {URLFROM},
-%   urlseen = {URLSEEN}
-% }
-
-% For typographical conventions stuff including
-%     \Emph{...}
-%     \FirstUsed{...}
-%     \Keys{...}
-%     \Literal{...}
-%     \Menu{...}
-%     \Place{...}
-%     \Shell{...}
-% This must be after
-%     \usepackage{tikz}
-\usepackage{pa-typographic-conventions}
-
-
-% For the \begin{example} ... \end{example} environment
-% used in ap-linguistics.tex.
-\usepackage{covington}
-\usepackage{slgloss}
-
-% "CTAN---Comprehensive" did not get hyphenated and extended
-% into the right margin when using BibLaTeX and the apa style.
-% These did not change it:
-%     \hyphenation{Com-pre-hen-sive}
-%     \hyphenation{CTAN---Com-pre-hen-sive}
-% I changed    publisher = {CTAN---Comprehensive TeX Archive Network},
-% to           publisher = {CTAN---Com\-pre\-hen\-sive TeX Archive Network},
-% in my all-biblatex.bib file and it worked as expeceted.
-% If you need to change the hyphenation points of a word in the text
-% you can do, for example,
-%     \hyphenation{ve-ry-od-dly-hy-phen-at-ed}
-
-% \renewbibmacro*{date}
-% {%
-%   \iffieldundef{year}
-% %   {\DeclareFieldFormat{date}{...}}
-% %   {\printtext{xxx}}
-% %   {\DeclareFieldFormat{date}{\printtext{zzz}}}
-% %   {}
-%     {xxx \printdate yyy}
-%     {xxx \printdate yyy}
-% }
-
-
-%          AtEveryBibitem{% Clean up the bibtex rather than editing it
-%            \ifentrytype{software}
-%              {}
-%              {\clearfield{urlyear}\clearfield{urlmonth}\clearfield{urlday}}}%
+\title{Computer Vision Analysis \& Monitoring of Vegetation Control
+Operations on Indiana Roadsides}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{A Master of Science in Agricultural and Biological Engineering
+Thesis}
+\author{Timothy J Wiegman
+\href{https://orcid.org/0000-0002-4341-0857}{\includegraphics[width=\linewidth,height=0.13889in,keepaspectratio]{https://info.orcid.org/wp-content/uploads/2019/11/id-icon-200px.png}}}
+\date{COMPLETE DRAFT rendered on \today}
 
 \begin{document}
-
-\makeatletter
-\renewcommand{\ZZAppendixName}{APPENDIX}
-%%%% \renewcommand{\chaptername}{CHAPTER}
-\def\@@makechapterhead#1{\uppercase{\@chapapp~\thechapter. #1}}
-
-\setcounter{tocdepth}{3}
-
 \maketitle
+\begin{abstract}
+Roadside vegetation control is an important part of modern
+infrastructure maintenance. Little data has been published to
+characterize the modern roadside mowing environment, identify challenges
+encountered by mowers, or quantify mower behaviors and responses to
+encountered conditions. A robust and effective methodology for
+collecting such information is also not rigorously defined in the
+literature. A better understanding of these factors, and more
+sophisticated tools with which to analyze them, may allow improving the
+efficiency, safety, and sustainability of the mowing process. In this
+document, it is shown that programmable action-sports cameras and
+standard agricultural telematics loggers can be used to record useful
+data about roadside mowing operations for understanding current
+operations and informing future developments. Image classification
+models detect human-operated mower incidents in the data gathered with
+the demonstrated equipment with rates of obstacle contact at up to 8
+times per hour and of causing permanent damage to obstacles at up to 0.4
+times per hour. The same model also shows human-operated mowers spend up
+to 60\% of mowing time contacting road shoulders or lane surfaces on
+divided highways and up to 90\% for rural roads. A visual odometry model
+was also tested on the gathered data to estimate tractor movement speed,
+but results from that model were inconclusive. The quantitative results
+reported here may enable future development of novel roadside vegetation
+control technologies, such as autonomous mowers or more advanced
+driver-assist systems.
+\end{abstract}
 
-% Define front matter
-%     dedication
-%     acknowledgments
-%     preface
-%     table of contents
-%     list of tables
-%     list of figures
-%     list of symbols
-%     abbreviations
-%     nomenclature
-%     glossary
-%     abstract
-\include{ch-front}
+\newpage{}
 
-% CHAPTER TEXT GOES HERE vvvvv
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\listoffigures
+\doublespacing \linenumbers
+\clearpage
 
-\chapter{INTRODUCTION}\label{sec:intro}
+\chapter{Introduction}\label{sec:intro}
 
 \section{Project Context}\label{project-context}
 
@@ -931,31 +175,31 @@ roads and highways, and these are crucial for facilitating safe and
 efficient travel throughout the region, enabling the free-flowing
 movement of people and goods and supporting the state's economic
 vitality. To ensure those roads remain effective and reliable, regular
-maintenance and upkeep is mandatory. Most of these state-maintained
-roads are flanked by vegetation of some kind, and---as is explored in
-Section~\ref{sec:veg} of this document---mowing is the most practical
-method for keeping that vegetation from growing beyond the level that is
-desired.
+maintenance and upkeep is mandatory. These state-maintained roads are
+flanked by more than 40,000 acres of vegetation of some kind, and---as
+is explored in Section~\ref{sec:veg} of this document---mowing is the
+most practical method for keeping that vegetation from growing beyond
+the level that is desired.
 
 Improvements to the roadside mowing process could provide many benefits
 to the state, including reduced labor costs, enhanced worker safety, and
-better environmental impacts. Current vegetation control strategies
-involve multiple different pieces of equipment and levels of worker
-involvement through the various steps in the process. Increasing the
-efficiency of that process, reducing the required time and costs, would
-allow the state to allocate its resources more effectively and include
-more priorities in its decisionmaking process with any newfound excess.
-Additionally, there are safety risks for both workers and the public
-inherent in working along the side of public roads. More efficient
-vegetation control technologies could reduce worker and equipment
-exposure to that environment, naturally reducing risks and enhancing the
-overall safety of the process. Finally, improvements to the system may
-improve environmental impacts, whether through greater energy efficiency
-reducing the carbon footprint of the process or more sustainable
-practices leading to healthier roadside habitats and nearby ecosystems.
-Improvements to roadside vegetation control may take multiple forms, and
-innovations in technology could lead to unexpected new solutions to this
-complex problem.
+better environmental impacts. Current vegetation control strategies cost
+the state 19 million dollars per year and involve multiple different
+pieces of equipment and levels of worker involvement through the various
+steps in the process. Increasing the efficiency of that process,
+reducing the required time and costs, would allow the state to allocate
+its resources more effectively and potentially include more priorities
+in its decisionmaking process. Additionally, there are safety risks for
+both workers and the public inherent in working along the side of public
+roads. More efficient vegetation control technologies could reduce
+worker and equipment exposure to that environment, naturally reducing
+risks and enhancing the overall safety of the process. Finally,
+improvements to the system may improve environmental impacts, whether
+through greater energy efficiency reducing the carbon footprint of the
+process or more sustainable practices leading to healthier roadside
+habitats and nearby ecosystems. Improvements to roadside vegetation
+control may take multiple forms, and innovations in technology could
+lead to unexpected new solutions to this complex problem.
 
 Currently, this maintenance is performed with large mowers towed by
 tractors and teams of pedestrian workers with handheld trimmers. Instead
@@ -993,8 +237,8 @@ environments. This project, therefore, aims to prepare a process for
 data collection and analysis that allows collecting quantitative results
 on current roadside mowing operations.
 
-\newpage
 \section{Thesis \& Goals}\label{thesis-goals}
+
 \textbf{Programmable action-sports cameras and standard agricultural
 telematics loggers can be used to record useful data about roadside
 mowing operations for understanding current operations and informing
@@ -1002,6 +246,8 @@ future developments.} This study describes a project in which a data
 collection process was developed to meet the following goals:
 
 \begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
 \item
   Characterize real-world mowing environments on Indiana roadways.
 \item
@@ -1016,8 +262,7 @@ of visual data must be collected to effectively study this topic.
 
 \clearpage
 
-
-\chapter{BACKGROUND}\label{background}
+\chapter{Background}\label{background}
 
 This chapter provides the reader with background knowledge necessary to
 understand the broader project introduced above. Section~\ref{sec:veg}
@@ -1106,11 +351,12 @@ The most commonly used methods today are a combination of mowing and
 chemical herbicides
 \parencite{Herold_IntegratedVegetationManagement_2014,Nemec_HowEngineersRoadside_2022}.
 The Indiana Department of Transportation (INDOT) divides road
-right-of-way into four zones for vegetation management purposes: Zone 1
-is the paved road surface, Zone 2 is the clear zone (for safety
-purposes), Zone 3 is the selective zone (where only invasive weeds and
-woody vegetation are removed), and Zone 4 is the outer zone (where only
-invasive weeds and hazardous tree species are removed)
+right-of-way into four zones for vegetation management purposes,
+summarized in Figure~\ref{fig:zones}: Zone 1 is the paved road surface,
+Zone 2 is the clear zone (for safety purposes), Zone 3 is the selective
+zone (where only invasive weeds and woody vegetation are removed), and
+Zone 4 is the outer zone (where only invasive weeds and hazardous tree
+species are removed)
 \parencite{FHAOPDER_VegetationManagementToolbox_2015}. The current
 practice, as recommended by
 \textcite{Herold_IntegratedVegetationManagement_2014}, is to mow the
@@ -1123,6 +369,13 @@ wide-area sprays. Near the edges of obstacles and along steep slopes,
 mechanical mowing is manually performed with string trimmers, as the
 heavy equipment used elsewhere cannot access such areas
 \parencite{Nemec_HowEngineersRoadside_2022}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth,keepaspectratio]{img/zones.jpg}
+  \caption{A graphic showing the four zones of vegetation management, 
+  adapted from \textcite{INDOT_MowingVegetation_Graphic}.}\label{fig:zones}
+\end{figure}
 
 One vegetation management strategy that has been adopted somewhat more
 recently in INDOT policy is the use of native prairie grasses in place
@@ -1575,8 +828,7 @@ so this is a novel space in computer vision.
 
 \clearpage
 
-
-\chapter{METHODS}\label{methods}
+\chapter{Methods}\label{methods}
 
 The equipment, environment, and basic logistics of the mowing operations
 monitored are explained in Section~\ref{sec:methods_mow}. The equipment
@@ -1603,13 +855,12 @@ those from the previous year. All mowing operations were performed by
 INDOT contractors with privately owned equipment, as shown in
 Figure~\ref{fig:mower}.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=4in,height=\textheight,keepaspectratio]{img/mower.png}
 \caption{An INDOT contractor's tractor and towed
 mower.}\label{fig:mower}
 \end{figure}
-
 
 The tractors used consisted of Maxxum 115 and 125 tractors (Case IH,
 Racine, WI). Towed mowers were all various models of flex-wing rotary
@@ -1629,7 +880,7 @@ year, one additional piece was added to the monitoring system: of a pair
 of remote GPS trackers (Apple, Cupertino, CA; and Samsung, Ridgefield
 Park, NJ), shown as callout \texttt{(1)} in Figure~\ref{fig:int24}.
 
-\begin{figure}[t]
+\begin{figure}
 \centering
 \includegraphics[width=5in,height=\textheight,keepaspectratio]{img/internal_2024.jpg}
 \caption{The operations monitoring equipment as deployed in a tractor in
@@ -1661,20 +912,13 @@ messages included several useful kinds of information from the vehicle's
 internal computer systems, particularly including ground speed and power
 take-off (PTO) usage.
 
-\begin{figure}[p]
+\begin{figure}
 \centering
 \includegraphics[width=3in,height=\textheight,keepaspectratio]{img/isoblue.png}
 \caption{A Purdue ISOBlue system. It can be attached to a vehicle's
 ISOBUS and a dedicated GPS module with rugged cables that lock into the
 weatherproof black fittings along the sides of the
 case.}\label{fig:ISOBlue}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[width=3in,height=\textheight,keepaspectratio]{img/camera.jpg}
-\caption{The type of camera and mounting frame used in this
-study.}\label{fig:camera}
 \end{figure}
 
 GPS data was recorded at a sample rate of 1 Hz, though no RTK was
@@ -1710,6 +954,13 @@ programmatically in response to different conditions. GPS metadata was
 extracted from video timelapses using an open-source python program
 \parencite{Casillas_Gopro2gpx_2023}.
 
+\begin{figure}
+\centering
+\includegraphics[width=3in,height=\textheight,keepaspectratio]{img/camera.jpg}
+\caption{The type of camera and mounting frame used in this
+study.}\label{fig:camera}
+\end{figure}
+
 Cameras were originally triggered to record by ``keyed'' power (power
 only enabled when the tractor is switched on), with an additional delay
 provided to encourage recording only mowing operations, not any initial
@@ -1728,7 +979,7 @@ might be spent after starting the engine but before beginning consistent
 mowing work. The logical flow of this configuration is summarized in
 Figure~\ref{fig:config1}.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=1.5in,keepaspectratio]{img/config1.pdf}
 \caption{A diagram describing how keyed power controls timelapse
@@ -1744,7 +995,7 @@ configuration also used a delay of 30 minutes, but it was split between
 time to fix on a GPS signal. The logic of this configuration is
 summarized in Figure~\ref{fig:config2}.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=1.5in,keepaspectratio]{img/config2.pdf}
 \caption{A diagram describing how keyed power controls timelapse
@@ -1760,10 +1011,9 @@ until it had obtained a GPS signal and could confirm that the tractor
 was moving. The logic of this configuration is summarized in
 Figure~\ref{fig:config3}.
 
-
-\begin{figure}[h]
+\begin{figure}
 \centering
-\includegraphics[width=\linewidth,keepaspectratio]{img/config3.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{img/config3.pdf}}
 \caption{A diagram describing how keyed power and GPS controls timelapse
 recordings in the camera's third configuration.}\label{fig:config3}
 \end{figure}
@@ -1788,7 +1038,7 @@ to the firmware configurations after that development was in enabling
 ``large chapter support'' so that very long videos would not be broken
 up into multiple smaller files.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=2in,keepaspectratio]{img/config4.pdf}
 \caption{A diagram describing how keyed power and GPS controls timelapse
@@ -1802,7 +1052,10 @@ by word-of-mouth from the mowing foreman. As this was found to be
 unreliable and difficult to organize, real-time GPS trackers were added
 for the 2024 season (see Figure~\ref{fig:int24}) to simplify the
 logistics of maintenance and provide a real-time estimate of activity
-without going into the field.
+without going into the field. To provide a reliable and robust
+repository for long-term storage of all collected data, a
+network-attached storage (NAS) server was configured with redundant
+disks and made available for this project.
 
 \section{Validation Process}\label{sec:methods_val}
 
@@ -1845,16 +1098,18 @@ GPS metadata, including date and time, to all recorded footage.
 \subsection{Automated Reliability
 Testing}\label{automated-reliability-testing}
 
-In order to allow rapid iteration on the camera configurations,
-replicable and quantitative measurements of camera reliability, and
-endurance tests of multiple reboots in sequence, some kind of controller
-test environment was desired. To fulfill this role, a robotic testing
-system was devised to simulate the changes in keyed power and tractor
-movement for an attached camera. The test system used a motorized boom
-to swing the camera in a wide circle---moving at a speed comparable to a
-tractor mowing in the field---and changes in movement patterns and
-simulated keyed power. The design of the machine and the test schedule
-are described below.
+Based on the camera reliability data gathered in the first season, an
+automated test environment was desired in order to help develop improved
+camera configurations for the second season. The primary purpose of the
+system was to allow rapid iteration on the camera configurations,
+providing replicable and quantitative measurements of camera reliability
+and endurance, even after multiple reboots in sequence. To fulfill this
+role, a robotic testing system was devised to simulate the changes in
+keyed power and tractor movement for an attached camera. The test system
+used a motorized boom to swing the camera in a wide circle---moving at a
+speed comparable to a tractor mowing in the field---and changes in
+movement patterns and simulated keyed power. The design of the machine
+and the test schedule are described below.
 
 The requirements for the system were determined experimentally. The
 minimum radius was found by moving a camera in successively wider
@@ -1871,8 +1126,7 @@ continuous power, model number DRVASMB7120037 (Pride Mobility, Exeter,
 PA). The boom was made from aluminum square tubing, providing a movement
 radius of 2 meters so that the attached camera could reliably measure
 movement via GPS. The system was controlled by an ESP32 microcontroller,
-with firmware provided in a repository online
-\parencite{Wiegman_MsThesisRepo_2025}.
+with firmware provided online \parencite{Wiegman_MsThesisRepo_2025}.
 
 The initial design used a caster wheel to support the long arm, in order
 to prevent the weight of the boom and attached camera from applying too
@@ -1885,7 +1139,7 @@ opposite end of the arm, to allow the boom to spin freely in midair
 without need for support under the long arm. A photograph of the machine
 is shown in Figure~\ref{fig:test}.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=4.5in,height=\textheight,keepaspectratio]{img/testrig.png}
 \caption{Photograph of the automated test system in operation. Callouts
@@ -1899,10 +1153,9 @@ relay, and it communicated the desired movement speed to the motor
 through a Talon SRX motor controller (CTR Electronics, Macomb, MI). A
 block diagram of the system is shown in Figure~\ref{fig:electronics}.
 
-
-\begin{figure}[h]
+\begin{figure}
 \centering
-\includegraphics[width=\linewidth,keepaspectratio]{img/electronics.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{img/electronics.pdf}}
 \caption{Block diagram of the electronics powering and controlling the
 automated test system.}\label{fig:electronics}
 \end{figure}
@@ -1915,7 +1168,7 @@ simple schedule was devised to check if the camera would trigger
 reliably: five minutes ``off'', with the system not moving and the
 camera power disabled, alternating with periods of ten minutes ``on'',
 with the camera powered and in motion. Camera Configuration \#4, as
-explained in Figure~\ref{fig:config4}, was tested for a total of 11
+explained in Figure~\ref{fig:config4}, was tested for a total of 30
 cycles.
 
 The videos recorded by the automatic schedule were checked for duration
@@ -2018,8 +1271,7 @@ Name
 4 & Building & 9 & Guardrail & 14 & Litter & 19 & Cable Barrier \\
 \end{longtable}
 
-
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=3.5in,keepaspectratio]{img/segmented.png}
 \caption{An example output from the instance segmentation model.
@@ -2030,18 +1282,20 @@ Segments identified: grass (green), mower (pink), road (blue), shoulder
 
 \subsection{Classification Model}\label{classification-model}
 
-A complementary classification model was used to predict relevant labels
-directly from input images, without requiring instance segmentation.
-This model takes an image as input and will output labels indicating the
-mower's position relative to the shoulder or road, wing orientation,
-operation mode (normal mow, transit, maneuver), and obstacle type (if
-applicable). Initially, a binary classification approach was considered
-to classify the mower as ``on'' or ``off'' the road/shoulder. However,
-due to instances where the mower's position was ambiguous, this approach
-was not feasible. Instead, the model was trained to output a continuous
-value representing the distance of the mower from the edge of the road
-or shoulder, with positive values indicating on-road/shoulder position
-and negative values denoting off-road/shoulder position.
+An alternative, classification-based model, also initially developed by
+Nathan Sprague \parencite{Sprague_ProgramAnnotateVideos_2024}, was used
+to predict relevant labels directly from input images, without requiring
+any intermediate segmentation steps. This model takes an image as input
+and will output labels indicating the mower's position relative to the
+shoulder or road, wing orientation, operation mode (normal mow, transit,
+maneuver), and obstacle type (if applicable). Initially, a binary
+classification approach was considered to classify the mower as ``on''
+or ``off'' the road/shoulder. However, due to instances where the
+mower's position was ambiguous, this approach was not feasible. Instead,
+the model was trained to output a continuous value representing the
+distance of the mower from the edge of the road or shoulder, with
+positive values indicating on-road/shoulder position and negative values
+denoting off-road/shoulder position.
 
 A specialized annotation tool
 \parencite{Sprague_ProgramAnnotateVideos_2024} was used to integrate
@@ -2071,21 +1325,23 @@ timelapses would be to try extracting the information from the images
 themselves, a computer vision task called visual odometry (see
 Section~\ref{sec:vo_lit}).
 
-A novel program for visual odometry was developed for this project. The
-architecture of the model was based on several found in the literature
+A novel program for visual odometry was developed as a part of this
+project. The architecture of the model was based on several found in the
+literature
 \parencite{Wang_DeepvoTowardsEnd_2017,Ye_PVOPanopticVisual_2023},
 simplified because it was specialized for the limited domain of roadside
-mowing timelapse imagery, in order to reduce training requirements. The
-model begins with basic feature extraction, using pre-trained depth
-estimation to help establish scale and distance in real space
-\parencite{Yang_DepthAnythingV2_2024}. Another important part of feature
-extraction is the ResNet, a commonly used pre-trained classification
-model \parencite{He_DeepResidualLearning_2015}. The pre-trained models
-for this section were used in order to avoid redundant training and
-avoid overfitting the large sections of the model to the limited domains
+mowing timelapse imagery, in order to make the computational
+requirements more feasible. The model begins with basic feature
+extraction, using pre-trained depth estimation to help establish scale
+and distance in real space \parencite{Yang_DepthAnythingV2_2024}. Another
+important part of feature extraction is the ResNet, a commonly used
+pre-trained classification model
+\parencite{He_DeepResidualLearning_2015}. The pre-trained models for this
+section were used in order to avoid redundant training and avoid
+overfitting the large sections of the model to the limited domains
 exposed in the training data. Following the initial layers, a
-long-short-term-memory (LSTM) layer---with 8 nodes in each of the 4
-internal cells---was used to help learn temporal relationships across
+long-short-term-memory (LSTM) layer---with 8 cells in each of the 4
+hidden layers---was used to help learn temporal relationships across
 input sequences, and linear layers combined all the extracted
 information to predict a single scalar value: the average movement speed
 for the input sequence. The model was trained end-to-end, rather than
@@ -2094,10 +1350,9 @@ is common in traditional VO systems, allowing the model to more
 implicitly learn the task \parencite{Wang_DeepvoTowardsEnd_2017}. The
 tested architecture is summarized in Figure~\ref{fig:vo_arch}.
 
-
-\begin{figure}[h]
+\begin{figure}
 \centering
-\includegraphics[width=\linewidth,keepaspectratio]{img/vo_arch.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{img/vo_arch.pdf}}
 \caption{Architecture of the visual odometry model. A convolutional
 neural network (CNN) was used to reduce input RGB-D images from 4 to 3
 channels, then those were run through a pre-trained ResNet and fed into
@@ -2105,6 +1360,16 @@ an LSTM module to detect temporal relationships. Two fully-connected
 linear layers were used to reduce the LSTM output to a single estimated
 speed (blue).}\label{fig:vo_arch}
 \end{figure}
+
+Several additional model architectures were tested to provide
+comparisons against the initial architecture shown in
+Figure~\ref{fig:vo_arch}. These were all variations on that initial
+architecture; the first was a simple replacement of the small LSTM layer
+with a deeper and wider Gated Recurrent Unit (GRU) layer---with 128
+cells in each of its 9 hidden layers. The second variation kept the GRU
+modification, but replaced the pre-trained classification model with
+VGG-13, another commonly-used pre-trained model
+\parencite{Simonyan_VeryDeepConvolutional_2015}, instead of ResNet.
 
 Data was input to the model as sequences of 59 images, each sequence
 corresponding to one minute of mowing operations in real time. For each
@@ -2135,8 +1400,7 @@ code developed for this project is open-source and available online
 
 \clearpage
 
-
-\chapter{RESULTS \& DISCUSSION}\label{results-discussion}
+\chapter{Results \& Discussion}\label{results-discussion}
 
 \section{Data Collection System Reliability}\label{sec:uptime}
 
@@ -2148,7 +1412,7 @@ cameras, and both simultaneously is shown in
 Figure~\ref{fig:uptime_2023}, derived from the GPS data recorded by both
 systems.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=2.5in,keepaspectratio]{img/uptime_2023.png}
 \caption{Timeline showing when different parts of the data collection
@@ -2204,7 +1468,7 @@ counties in which GPS-synchronized data was recorded in 2023 on both
 camera and telematics simultaneously, as well as all counties in which
 partial, non-synchronized GPS data was recorded.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=3in,keepaspectratio]{img/counties_2023.png}
 \caption{Counties in which fully monitored mowing operations took place
@@ -2222,7 +1486,7 @@ overview of the uptime for telematics, cameras, and both simultaneously
 is shown in Figure~\ref{fig:uptime_2024}, derived from the GPS data
 recorded by both systems.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=2.5in,keepaspectratio]{img/uptime_2024.png}
 \caption{Timeline showing when different parts of the data collection
@@ -2262,7 +1526,7 @@ counties in which GPS-synchronized data was recorded in 2024 on both
 camera and telematics simultaneously, as well as all counties in which
 partial, non-synchronized GPS data was recorded.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=3in,keepaspectratio]{img/counties_2024.png}
 \caption{Counties in which monitored mowing operations took place during
@@ -2280,7 +1544,7 @@ cabin. If given enough speed, even a small object can impart enough
 energy to shatter the window glass on which the camera is mounted, as is
 seen in Figure~\ref{fig:shatter}.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=5in,height=\textheight,keepaspectratio]{img/shatter.png}
 \caption{\emph{Left:} View of an implement-facing camera, facing typical
@@ -2290,8 +1554,8 @@ shattered upon impact with a piece of mower-launched
 debris.}\label{fig:shatter}
 \end{figure}
 
-\clearpage
 \subsection{Year-to-Year Trends}\label{sec:conclude_yty}
+
 A chart showing the difference in recording uptimes is shown in
 Figure~\ref{fig:uptime_hours}, proving that the improved data collection
 protocols established for 2024 were an improvement on all fronts. The
@@ -2306,7 +1570,7 @@ data significantly more often in the second season than in the first.
 This enabled more frequent error correction and more opportunities to
 notice potential problems sooner.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=5in,height=\textheight,keepaspectratio]{img/uptime_hours.png}
 \caption{Number of unique hours recorded by each piece of equipment and
@@ -2327,14 +1591,14 @@ if not the actual road lanes. These measurements for 2023 and 2024,
 respectively, are shown in Figure~\ref{fig:shoulder23} and
 Figure~\ref{fig:shoulder24}, segregated by road type in both cases.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=2.5in,keepaspectratio]{img/shoulder_2023.png}
 \caption{Operators were much more likely to drive on-road on rural
 roads.}\label{fig:shoulder23}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=2.5in,keepaspectratio]{img/shoulder_2024.png}
 \caption{Operators spent a significant portion of their time driving at
@@ -2436,7 +1700,7 @@ about the camera triggering reliability and latency. A timeline of
 programmed movements and the corresponding recordings is shown in
 Figure~\ref{fig:rig_results}.
 
-\begin{figure}[htb]
+\begin{figure}
 \centering
 \includegraphics[width=5.5in,height=\textheight,keepaspectratio]{img/testrig_results.png}
 \caption{The automatic camera properly triggered recording for 80\% of
@@ -2444,18 +1708,17 @@ movements, capturing 64\% of total time spent in motion with an average
 latency of 109 seconds or 1.81 minutes.}\label{fig:rig_results}
 \end{figure}
 
-
-\begin{figure}[htb]
+\begin{figure}
 \centering
-\includegraphics[height=2.5in,keepaspectratio]{img/testrig_results_cov.png}
+\pandocbounded{\includegraphics[keepaspectratio]{img/testrig_results_cov.png}}
 \caption{Most motions were automatically captured with high coverage,
 but sometimes the camera started recording late or did not start at
 all.}\label{fig:rig_capture}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}
 \centering
-\includegraphics[height=2.5in,keepaspectratio]{img/testrig_results_lat.png}
+\pandocbounded{\includegraphics[keepaspectratio]{img/testrig_results_lat.png}}
 \caption{Of recordings that successfully triggered, almost all of them
 started recording within two minutes of the machine starting to
 move.}\label{fig:rig_latency}
@@ -2488,9 +1751,10 @@ that the system was quite reliable at beginning to record promptly after
 movement starts; long periods of undetected and unrecorded movements are
 rare.
 
-\clearpage
 \section{Obstacle Encounters}\label{sec:obstacles}
+
 \subsection{First Season (2023)}\label{first-season-2023}
+
 Although limited data was collected in 2023, there was still enough to
 measure a significant number of encounters with many kinds of obstacles.
 The number of encounters with up to ten kinds of obstacles are shown in
@@ -2528,7 +1792,7 @@ change to any incredible degree, note that these plots consider obstacle
 encounters from a significantly larger dataset (more hours of
 operations) than the previous year's.
 
-\begin{figure}[ph]
+\begin{figure}
 \centering
 \includegraphics[width=6in,height=\textheight,keepaspectratio]{img/obstacles_2023r.png}
 \caption{A plot of the obstacles encountered during 2023 mowing
@@ -2536,7 +1800,7 @@ operations on rural roads. (From 68.5 hours of monitored
 operations.)}\label{fig:obs23r}
 \end{figure}
 
-\begin{figure}[ph]
+\begin{figure}
 \centering
 \includegraphics[width=6in,height=\textheight,keepaspectratio]{img/obstacles_2023h.png}
 \caption{A plot of the obstacles encountered during 2023 mowing
@@ -2544,7 +1808,7 @@ operations on highway roads. (From 41.8 hours of monitored
 operations.)}\label{fig:obs23h}
 \end{figure}
 
-\begin{figure}[ph]
+\begin{figure}
 \centering
 \includegraphics[width=6in,height=\textheight,keepaspectratio]{img/obstacles_2024r.png}
 \caption{A plot of the obstacles encountered during 2024 mowing
@@ -2552,7 +1816,7 @@ operations on rural roads. (From 311 hours of monitored
 operations.)}\label{fig:obs24r}
 \end{figure}
 
-\begin{figure}[ph]
+\begin{figure}
 \centering
 \includegraphics[width=6in,height=\textheight,keepaspectratio]{img/obstacles_2024h.png}
 \caption{A plot of the obstacles encountered during 2024 mowing
@@ -2560,8 +1824,8 @@ operations on highway roads. (From 374 hours of monitored
 operations.)}\label{fig:obs24h}
 \end{figure}
 
-\clearpage
 \section{Visual Odometry}\label{sec:results_vo}
+
 After 50 epochs of training on real timelapse image sequences recorded
 in the 2024 season, the model was able to converge on a rough
 approximation of the correct values, as shown in
@@ -2575,7 +1839,7 @@ predicted speed never strayed below about 2 m/s, it seems that a strong
 bias was learned in the fully-connected layers near the end of the
 model.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\linewidth,height=3in,keepaspectratio]{img/vo_timelapse.png}
 \caption{Results of training on timelapse
@@ -2592,9 +1856,9 @@ an impossible task. The model was later trained on the validation data
 set, as explained in Section~\ref{sec:methods_vo}, for 10 epochs, and
 the results are shown in Figure~\ref{fig:vo_val}.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
-\includegraphics[width=\linewidth,height=3in,keepaspectratio]{img/automobile-training.png}
+\includegraphics[width=\linewidth,height=3in,keepaspectratio]{img/automobile-lstm4-50.png}
 \caption{Results of training on validation (control)
 dataset.}\label{fig:vo_val}
 \end{figure}
@@ -2613,8 +1877,8 @@ performant models in the literature in order to reduce its computational
 and memory requirements. A more sophisticated model architecture may
 allow a more effective model to be trained for this subject. Another,
 more specific potential problem with the tested model lies in the LSTM
-layer; relatively small LSTM layers were used, including only 8 cells,
-each with 4 hidden nodes. Particularly if combined with a lack of
+section; relatively small LSTM layers were used, including only 50
+cells, each with 4 hidden nodes. Particularly if combined with a lack of
 requisite complexity earlier in the stack, it may have been unrealistic
 to expect the model to effectively extract the correct information into
 only that space. While LSTM layers tend to run slowly and require
@@ -2625,7 +1889,42 @@ layer could be used in place of the LSTM, such as a Gated Recurrent Unit
 (GRU) or Temporal Convolutional Network (TCN), which require less
 computational resources than LSTM layers do.
 
-\chapter{CONCLUSION}\label{conclusion}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth,height=3in,keepaspectratio]{img/automobile-gru9-128.png}
+\caption{Results of training on validation (control) dataset with GRU
+layers instead of LSTM.}\label{fig:vo_valgru}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth,height=3in,keepaspectratio]{img/automobile-vgg-gru9-128.png}
+\caption{Results of training on validation (control) dataset with GRU
+layers and using VGG-13 as the pre-trained
+encoder.}\label{fig:vo_valvgg}
+\end{figure}
+
+The variations on the initial architecture, as discussed in
+Section~\ref{sec:methods_vo}, were also tested on the validation
+dataset. Results for the first variation are shown in
+Figure~\ref{fig:vo_valgru}, and results for the second variation are
+shown in Figure~\ref{fig:vo_valvgg}. Both models showed similarly poor
+performance as the initial LSTM-based architecture, which suggests that
+simply increasing the complexity of the architecture was not sufficient
+to rescue the model performance, nor a simple change in the pre-trained
+layers for initial feature extraction. It is possible that \emph{less}
+complexity, rather than more, would enable better performance: another
+potential avenue for future development could be in training the model
+in a more targeted fashion, with most layers frozen in order to
+concentrate the effects of training epochs into fewer and more impactful
+layers of the model. An entirely different kind of feature extraction
+layer could also be worth exploring, exchanging the pre-trained
+classification model for something like optical flow-based feature
+trackers \parencite{Min_VoldorVisualOdometry_2020}.
+
+\clearpage
+
+\chapter{Conclusion}\label{conclusion}
 
 \section{In-Field Data Collection Processes}\label{sec:conclude_data}
 
@@ -2689,7 +1988,7 @@ standards, which would lead to greater safety for the public and reduced
 outlay on property damage: major improvements to the process of roadside
 vegetation control as a whole.
 
-\chapter{FUTURE WORK}\label{future-work}
+\chapter{Future Work}\label{future-work}
 
 The results of the analysis of collected data, as shown particularly in
 Section~\ref{sec:obstacles}, provide a much clearer understanding of the
@@ -2709,189 +2008,8 @@ refinement of the methods attempted here with a more sophisticated
 architecture and/or additional computational resources may be a
 relatively simple path to acceptable performance.
 
+\clearpage
 
-% CHAPTER TEXT GOES HERE ^^^^^
+\printbibliography[title=References]
 
-
-\makeatletter  % commented out on 2022-01-26
-  \defbibenvironment{bibliography}
-    {%
-      \list
-        {%
-          \printtext[labelnumberwidth]%
-          {%
-            \printfield{prefixnumber}%
-            \printfield{labelnumber}%
-          }%
-        }%
-        {%
-          \setlength{\bibhang}{1in} %%%%% was 0pt
-          \setlength{\itemindent}{1in}%  -\leftmargin} %%%%% was 0pt
-          \setlength{\itemsep}{\bibitemsep}%
-          \setlength{\leftmargin}{0pt}%  .22in} % 0.42in}
-          \setlength{\parsep}{\bibparsep}%
-          \setlength{\rightmargin}{0.33in}%
-        }%
-    }
-    {\endlist}
-    {\item}
-\makeatother  % commented out on 2022-01-26
-
-% \immediate\setlength{\labelnumberwidth}{1.5in} %%%%% was commented out
-\setlength{\labelwidth}{1.5in}
-
-{%
-  % Make _ in URLs visible.
-  % \def\t{\char'137}%
-  \catcode`*=\active
-  \def*{\char'137}%  \char'137 is _
-  \PrintBibliography
-}
-
-% Appendices are optional.  Not all theses contain appendices.
-% An appendix is used for supplementary illustrative material,
-% original data, computer programs, and other material that is not
-% necessarily appropriate for inclusion within the text of your
-% thesis.
-% Reference: TM2017 page 33.
-%
-% Use ``\appendix'' for one appendix or ``\appendices'' for more than
-% one appendix.
-% \appendix
-
-
-% My filename conventions:
-%     FILE THAT START WITH    ARE
-%     ap-                     appendices
-%     ch-                     chapters
-%     gr-                     graphics
-%     pa-                     packages
-%     z                       temporary files
-
-  % % "About Appendices" appendix.
-  % \include{ap-about-appendices}
-
-  % % Accessibility.
-  % \include{ap-accessibility}
-  
-  % % "Bugs" appendix.
-  % \include{ap-bugs}
-
-  % % Check margins.
-  % \include{ap-check-margins}
-
-  % % Demonstrate how to do separate appendices per chapter.
-  % \include{ap-chapter-appendices}
-
-  % % Citations and references.
-  % \include{ap-citations-references}
-
-  % % Common mistakes.
-  % \include{ap-common-mistakes}
-
-  % % Defining commands.
-  % \include{ap-defining-commands}
-
-  % % Deprecated software.
-  % \include{ap-deprecated-software}
-
-  % % Figures.
-  % \include{ap-figures}
-
-  % % Frequently Asked Questions.
-  % \include{ap-frequently-asked-questions}
-
-  % % Graphics.
-  % \include{ap-graphics}
-
-  % % How to debug LaTeX Problems.
-  % \include{ap-how-to-debug-latex-problems}
-
-  % % Ignore these references.
-  % \include{ap-ignore-these-references}
-
-  % % Logos.
-  % \include{ap-logos}
-
-  % % Numbers and Units.
-  % \include{ap-numbers-and-units}
-
-  % % Resources.
-  % \include{ap-resources}
-
-  % % Tables.
-  % \include{ap-tables}
-
-  % % Special characters.
-  % \include{ap-special-characters}
-
-  % % Testing.
-  % \include{ap-testing}
-
-  % % Text.
-  % \include{ap-text}
-
-  % % Video.
-  % % \include{ap-video}
-
-  % % Astronomy.
-  % \include{ap-astronomy}
-
-  % % Biology.
-  % \include{ap-biology}
-
-  % % Chemistry.
-  % \include{ap-chemistry}
-
-  % % Computer Science.
-  % \include{ap-computer-science}
-
-  % % Electrical Engineering.
-  % \include{ap-electrical-engineering}
-
-  % % Linguistics.
-  % \include{ap-linguistics}
-
-  % % Mathematics.
-  % \include{ap-mathematics}
-
-  % % Music.
-  % \include{ap-music}
-
-  % % Physics.
-  % \include{ap-physics}
-
-  % Notes and footnotes are optional.
-  % Reference: TM2017 page 34.
-  % I have not implemented this yet.  Mark Senn 2002-06-03
-
-  % A vita is optional for masters theses
-  % and required for doctoral dissertations.
-  % Reference: TM2017 page 13.
-  % \include{ap-vita}
-
-  % Listing or including publications(s) is optional.
-% \include{ap-publications}
-% \includepdf[scale=0.9, pages=1]{ztemp-sgopalsa-paper.pdf}
-% \includepdf[offset=-1.5truein 0.25truein, scale=0.9, pages=1]{ztemp-sgopalsa-paper.pdf}
-% \includepdf[offset=-1.5truein 0.2truein,  scale=0.9, pages=2]{ztemp-sgopalsa-paper.pdf}
-% \includepdf[offset=-1.5truein 0.2truein,  scale=0.9, pages=3]{ztemp-sgopalsa-paper.pdf}
-% \includepdf[offset=-1.5truein 0.2truein,  scale=0.9, pages=4]{ztemp-sgopalsa-paper.pdf}
-% \includepdf[offset=-1.5truein 0.2truein,  scale=0.9, pages=5]{ztemp-sgopalsa-paper.pdf}
-% \includepdf[offset=-1.5truein 0.2truein,  scale=0.9, pages=6]{ztemp-sgopalsa-paper.pdf}
-% \includepdf[offset=-1.5truein 0.2truein,  scale=0.9, pages=7]{ztemp-sgopalsa-paper.pdf}
-
-  % Print the index.
-  % The index is optional.
-  \pdfbookmark{INDEX}{index}
-  \printindex
-
-  % If \ZZshowcolophon is true, print the colophon.
-  % \pdfbookmark{COLOPHON}{colophon}
-  % \ifthen{\equal{true}{\ZZshowcolophon}}
-  %   {\include{ap-colophon}}
-
-% LaTeX won't read after the \end{document} command.
-% You can put notes to yourself or LaTeX input not
-% ready for use after "\end{document}" if you'd like.
 \end{document}
